@@ -13,8 +13,8 @@ const io = new Server(server)
 
 app.use(cors({ origin: '*' }))
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'public'));
+app.use(express.static(path.join(__dirname, '../public')));
+app.set('views', path.join(__dirname, '../public'));
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 
