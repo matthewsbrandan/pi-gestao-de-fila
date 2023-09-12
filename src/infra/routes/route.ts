@@ -1,6 +1,6 @@
 import { Router } from "express"
-import webRouter from "./web.route"
 import apiRouter from "./api.route"
+import webRouter from "./web/index.route"
 
 const router = Router()
 

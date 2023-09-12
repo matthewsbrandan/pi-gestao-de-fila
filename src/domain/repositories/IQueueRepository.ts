@@ -1,6 +1,7 @@
 import { Queue } from "../entities/Queue";
 
+export interface CreateQueueProps extends Omit<Queue, 'id' | 'started_at' | 'is_open' | 'ended_at' | 'orders'>{}
 export interface IQueueRepository{
-  findOpenedQueueByUserId(user_id: string) : Promise<Queue>
-  createQueue(props: Omit<Queue, 'id'>) : Promise<Queue>
+  findStartedQueue() : Promise<Queue | undefined>
+  createQueue(props: CreateQueueProps) : Promise<Queue>
 }

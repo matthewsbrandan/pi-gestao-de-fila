@@ -1,6 +1,6 @@
 import { Queue } from "../../../domain/entities/Queue";
 import { CreateQueueProps, IQueueRepository } from "../../../domain/repositories/IQueueRepository";
-import { delay } from "./utils";
+import db from "../../config/prisma";
 
 const queues : Queue[] = []
 export class QueueRepository implements IQueueRepository{
@@ -9,22 +9,31 @@ export class QueueRepository implements IQueueRepository{
   }
 
   async findStartedQueue(): Promise<Queue | undefined> {
-    await delay()
+    const findedQueue = db.queue.findFirst({
+      where: { is_open: true }
+    })
 
-    const findedQueue = queues.find(q => q.is_open)
-    if(!findedQueue) return
+    if(!findedQueue) return;
 
     return this._instance(findedQueue)
   }
-  async createQueue(props: CreateQueueProps): Promise<Queue> {
+  async createQueue({ is_autoincrement, max_length, user_id, start_in }: CreateQueueProps): Promise<Queue> {
     const existsStartedQueue = !!await this.findStartedQueue()
     if(existsStartedQueue) throw new Error(
       'Já existe uma fila iniciada. É necessário encerrar a primeira fila para poder abrir uma nova'
     )
 
-    const instancied = this._instance(props)
-    queues.push(instancied)
+    const createdQueue = await db.queue.create({
+      data: {
+        started_at: new Date(),
+        is_open: true,
+        is_autoincrement,
+        max_length,
+        start_in,
+        user_id,
+      }
+    })
     
-    return instancied;
+    return this._instance(createdQueue);
   }
 }

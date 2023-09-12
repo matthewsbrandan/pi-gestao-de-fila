@@ -1,8 +1,7 @@
-import { v4 as uuid } from 'uuid';
 import { Order } from './Order';
 
 export class Queue{
-  public readonly id : string = uuid()
+  public readonly id : number
   public is_autoincrement : boolean = true
   public start_in? : number = 100
   public max_length? : number
@@ -10,9 +9,9 @@ export class Queue{
   public started_at : Date = new Date()
   public ended_at? : Date
   public orders: Order[] = []
-  public user_id : string
+  public user_id : number
 
-  constructor(props: Omit<Queue, 'id'>, id?: string){
+  constructor(props: Omit<Queue, 'id'>, id?: number){
     Object.assign(this, props)
     if(id) this.id = id
   }

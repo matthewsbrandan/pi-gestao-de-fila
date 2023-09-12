@@ -1,0 +1,46 @@
+<div
+  id="container-toast"
+  class="p-2 d-flex gap-2"
+  style="position: fixed; top: 0; right: 0; flex-direction: column; z-index: 9999;"
+></div>
+
+
+
+<script>
+  function notify(type, message){
+    const theme = 
+      type === 'info' ? 'primary' : 
+      type === 'error' ? 'danger' :  
+      type === 'success' ? 'success' : 'secondary'
+
+    const element = document.createElement('div')
+    element.classList.add('toast', 'align-items-center', 'text-white', `bg-${theme}`, 'border-0');
+    element.setAttribute('role', 'alert');
+    element.setAttribute('aria-live', 'assertive');
+    element.setAttribute('aria-atomic', 'true');
+    element.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
+      </div>
+    `
+
+    document.getElementById('container-toast').appendChild(element)
+
+    var toast = new bootstrap.Toast(element, {
+      animation: true,
+      autohide: true,
+      delay: 5 * 1000
+    })
+    toast.show()
+
+    setTimeout(() => element.remove(), 7.5 * 1000)
+  }
+</script>

@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String? @unique
+  phone    String? @unique
+  password String
+  type     String  @default("client")
+
+  queues Queue[]
+
+  @@map("users")
+}
+
+model Queue {
+  id               Int       @id @default(autoincrement())
+  is_autoincrement Boolean   @default(true)
+  start_in         Int       @default(100)
+  max_length       Int?
+  is_open          Boolean   @default(true)
+  started_at       DateTime
+  ended_at         DateTime?
+  user_id          Int
+
+  user   User    @relation(fields: [user_id], references: [id])
+  orders Order[]
+
+  @@map("queues")
+}
+
+model Order {
+  id       Int    @id @default(autoincrement())
+  name     String
+  status   String
+  queue_id Int
+
+  queue Queue @relation(fields: [queue_id], references: [id])
+
+  @@map("orders")
+}

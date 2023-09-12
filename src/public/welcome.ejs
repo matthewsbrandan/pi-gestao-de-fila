@@ -1,0 +1,20 @@
+<%-
+  include('layout/header', headerOptions)
+-%>
+  <div class="bg-light p-5 rounded my-auto">
+    <h1>ChamaEu!</h1>
+    <p class="lead">
+      Bem vindo ao aplicativo chama eu.<br/>
+      Acompanhe seu pedido e seja avisado quando ele estiver pronto
+    </p>
+    <div class="d-flex mt-4" style="gap: .5rem">
+      <button
+        type="button"
+        class="btn btn btn-primary"
+        data-bs-toggle="modal" data-bs-target="#modalSignin"
+      >Logar / Cadastrar-se</button>
+      <a class="btn btn btn-dark" href="/fila" role="button">Entrar como Visitante</a>
+    </div>
+  </div>
+<%- include('utils/modals/sign-in') -%>
+<%- include('layout/footer'); -%>
