@@ -36,22 +36,23 @@
               placeholder="Digite sua senha..."
               required
             >
-            <label for="floatingPassword">Senha</label>
+            <label for="login-password">Senha</label>
           </div>
           <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Entrar</button>
           <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="button" disabled>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <small>Autenticando...</small>
           </button>
-
-          <!-- <small class="text-muted">Ao clicar em cadastrar, você concorda com os termos de uso.</small> -->
-          <hr class="my-4">
-          <small class="text-muted text-center mb-2 d-block">Ainda não criou sua conta? Clique abaixo para se cadastrar</small>
-          <!-- <h2 class="fs-5 fw-bold mb-3">Ou clique aqui para se cadastrar</h2> -->
-          <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-4" type="submit">
-            Cadastrar-se
-          </button>
         </form>
+        <hr class="my-4">
+        <small class="text-muted text-center mb-2 d-block">Ainda não criou sua conta? Clique abaixo para se cadastrar</small>
+        <button
+          class="w-100 py-2 mb-2 btn btn-outline-dark rounded-4"
+          type="button"
+          onclick="loginToSignup()"
+        >
+          Cadastrar-se
+        </button>
       </div>
     </div>
   </div>

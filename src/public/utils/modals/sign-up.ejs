@@ -1,0 +1,79 @@
+<div class="modal modal-signin bg-secondary py-5" tabindex="-1" role="dialog" id="modalSignup">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h2 class="fw-bold mb-0">Crie uma conta</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-5 pt-2">
+        <form id="form-signup">
+          <style>
+            #form-signup.is-loading button[type=submit]{
+              display: none !important;
+            }
+            #form-signup:not(.is-loading) button:disabled{
+              display: none !important;
+            }
+          </style>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              name="name"
+              id="signup-name"
+              class="form-control rounded-4"
+              placeholder="Digite seu nome..."
+              required
+            >
+            <label for="signup-name">Nome</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="email"
+              name="email"
+              id="signup-email"
+              class="form-control rounded-4"
+              placeholder="Digite seu email..."
+              required
+            >
+            <label for="signup-email">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              name="phone"
+              id="signup-phone"
+              class="form-control rounded-4"
+              placeholder="Digite seu telefone..."
+            >
+            <label for="signup-phone">Telefone (opcional)</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="password"
+              name="password"
+              id="signup-password"
+              class="form-control rounded-4"
+              placeholder="Digite sua senha..."
+              required
+            >
+            <label for="signup-password">Senha</label>
+          </div>
+          <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Cadastrar</button>
+          <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <small>Cadastrando...</small>
+          </button>
+        </form>
+        <hr class="my-4">
+
+        <small class="text-muted text-center mb-2 d-block">Já é cadastrado? Clique abaixo para fazer o login</small>
+        <button
+          class="w-100 py-2 mb-2 btn btn-outline-dark rounded-4"
+          type="button"
+          onclick="signupToLogin()"
+        >Logar</button>
+      </div>
+    </div>
+  </div>
+</div>

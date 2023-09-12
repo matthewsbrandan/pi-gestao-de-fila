@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStartedQueue/FindStartedQueueUseCase";
+import { User } from "../../../domain/entities/User";
 
 export class HomeController{
   constructor(
@@ -8,28 +9,29 @@ export class HomeController{
 
   async handle(request: Request, response: Response){
     try {
-      const user = request.user;
-      
+      const user = request.user as User;
+      const headerOptions = {
+        import: { css: ['modal.css'] }
+      }
       if(user){
-        console.log('[logged-user]', { user })
-        // [ ] VERIFICAR TIPO DE USUÁRIO
-        //     [ ] SE FOR MANAGER E EXISTIR FILA, IR PARA MANAGE-QUEUE
-        //     [ ] SE FOR CLIENT E EXISTIR FILA, IR PARA LISTA DE PEDIDOS PARA SELECIONAR
+        // [x] VERIFICAR TIPO DE USUÁRIO
+        //     [x] SE FOR MANAGER E EXISTIR FILA, IR PARA MANAGE-QUEUE
+        //     [x] SE FOR CLIENT E EXISTIR FILA, IR PARA LISTA DE PEDIDOS PARA SELECIONAR
         //         [ ] SE NÃO HOUVER FILA ABERTA MOSTRAR UMA MENSAGEM DE ERRO
 
         const queue = await this.findStartedQueue.execute()
-        if(queue) return response.render('manage-queue', {
-          queue
-        });
-
-        return response.render('index.ejs')
+        if(queue){
+          if(user.type === 'manager') return response.render('manage-queue', {
+            queue
+          });
+          else return response.render('queue', {
+            queue
+          })
+        }
+        return response.render('index.ejs', { headerOptions })
       }
 
-      return response.render('welcome.ejs', {
-        headerOptions: {
-          import: { css: ['modal.css'] }
-        }
-      })
+      return response.render('welcome.ejs', { headerOptions })
     } catch (error) {
       return response.status(500).json({
         result: false,
