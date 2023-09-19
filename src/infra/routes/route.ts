@@ -7,4 +7,4 @@ const router = Router()
 router.use('/', webRouter)
 router.use('/api/', apiRouter)
 
-export default router
+export { router }

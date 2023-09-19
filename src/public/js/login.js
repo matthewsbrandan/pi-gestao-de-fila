@@ -22,7 +22,7 @@ function login(event){
     notify(data.result ? 'success' : 'error', data.response)
 
     if(data.result) setTimeout(
-      () => window.location.reload(), 4 * 1000
+      () => window.location.reload(), 2 * 1000
     )
   }).catch((err) => {
     notify('error', err.response ?? 'Houve um erro ao processar a resposta do login');

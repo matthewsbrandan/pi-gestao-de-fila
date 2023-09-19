@@ -5,5 +5,26 @@
     crossorigin="anonymous"
   ></script>
   <%- include('../js/notify') -%>
+  <% if(messages && messages.length > 0){ %>
+    <script>
+      window.addEventListener('load', () => {
+        try{
+          const messages = <%- JSON.stringify(messages) %>;
+
+          messages.forEach((data) => {
+            try{
+              const [type, ...rest] = data.split(':')
+              const message = rest.join(':')
+              
+              notify(type, message)
+            }catch(e){ console.error('[error-flash-message]', { e }) }
+          })
+        }catch(e){
+          console.error('[error-process-flash-message]', { e })
+          return []
+        }
+      })
+    </script>
+  <% } %>
 </body>
 </html>

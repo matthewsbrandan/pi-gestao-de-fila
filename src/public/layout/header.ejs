@@ -11,7 +11,7 @@
     rel="stylesheet"
   />
   <link rel="shortcut icon" href="/asset/icon.svg" type="image/svg">
-  <% if(headerOptions && headerOptions.import.css) { headerOptions.import.css.forEach(function(css){ %>
+  <% if(headerOptions && headerOptions.import && headerOptions.import.css) { headerOptions.import.css.forEach(function(css){ %>
     <link rel="stylesheet" href="/css/<%- css -%>">
   <% }) } %>
 </head>

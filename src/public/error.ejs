@@ -1,0 +1,19 @@
+<%-
+  include('layout/header', headerOptions)
+-%>
+  <div class="bg-light p-5 rounded my-auto">
+    <h1><%- error.title ?? 'Erro Inesperado' -%></h1>
+    <% if(error.message){ %>
+      <p class="lead">
+        <%- error.message -%>
+      </p>
+    <% } %>
+    <% if(error.goBack){ %>
+      <div class="d-flex mt-4" style="gap: .5rem">
+        <a class="btn btn btn-dark" href="/" role="button">Voltar a tela incial</a>
+      </div>
+    <% } %>
+  </div>
+<%- include('utils/modals/sign-up') -%>
+<%- include('utils/modals/sign-in') -%>
+<%- include('layout/footer'); -%>

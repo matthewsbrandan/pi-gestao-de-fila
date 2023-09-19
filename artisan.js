@@ -70,12 +70,13 @@ class Automator{
     const createControllerFile = (dir, name) => {
       const controllerCode = []
       controllerCode.push(`import { Request, Response } from "express";`);
+      controllerCode.push(`import { Controller } from "../Controller";`);
       controllerCode.push(`import { ${name}${sufix.useCase} } from "${paths.controllerTo.useCase}/${dir}/${name}/${name}${sufix.useCase}";`);
       controllerCode.push(``);
-      controllerCode.push(`export class ${name}Controller{`);
+      controllerCode.push(`export class ${name}Controller extends Controller{`);
       controllerCode.push(`  constructor(`);
       controllerCode.push(`    private useCase: ${name}${sufix.useCase}`);
-      controllerCode.push(`  ){}`);
+      controllerCode.push(`  ){ super() }`);
       controllerCode.push(``);
       controllerCode.push(`  async handle(request: Request, response: Response){`);
       controllerCode.push(`    try {`);

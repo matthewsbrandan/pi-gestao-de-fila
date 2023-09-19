@@ -8,14 +8,16 @@ import bcrypt from 'bcrypt'
 import path from 'path'
 import ejs from 'ejs'
 import http from 'http'
+import flash from 'connect-flash';
 
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Server } from 'socket.io'
 
-import router from './routes/route'
+import { router } from './routes/route'
 import { User } from '../domain/entities/User'
 import { FindUserByEmailOrPhoneFactory } from './factories/User/FindUserByEmailOrPhoneFactory'
 import { FindUserByIdFactory } from './factories/User/FindUserByIdFactory'
+import { route } from './routes/routenames'
 
 const app = express()
 const server = http.createServer(app)
@@ -29,7 +31,12 @@ app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 
 app.use(express.urlencoded({ extended: false }));
-app.use(session({ secret: process.env.SECRET_KEY, resave: false, saveUninitialized: false }));
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  saveUninitialized: false,
+  resave: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000} // 24h - 1d
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -59,6 +66,13 @@ passport.deserializeUser(async (id: number, done) => {
   } catch (error) {
     done(error);
   }
+});
+
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.route = route
+  res.locals.messages = req.flash('message');
+  next();
 });
 
 app.use(router)

@@ -1,14 +1,16 @@
 import { Router } from "express"
 import authRouter from "./auth.route"
 import { HomeFactory } from "../../factories/WebView/HomeFactory"
+import queueRouter from "./queue.route"
+import { route } from "../routenames"
 
 const webRouter = Router()
 
 webRouter.use('/auth', authRouter)
 
-// [x] CRIAR MIDDLEWARE DE AUTENTICAÇÃO, CASO O USUÁRIO NÃO ESTEJA AUTENTICADO, REDIRECIONAR PARA AUTH
-//     [ ] CASO O USUÁRIO NÃO POSSUA LOGIN, PERGUNTAR SE ELE É UM CLIENTE QUE DESEJA APENAS ACOMPANHAR O PEDIDO
+webRouter.get(route.home(), (req, res) => HomeFactory().handle(req,res))
 
-webRouter.get('/', (req, res) => HomeFactory().handle(req,res))
+// --prefix /fila
+webRouter.use('/', queueRouter)
 
 export default webRouter
