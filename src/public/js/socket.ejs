@@ -1,4 +1,36 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
   var socket = io();
+
+  socket.on('previousOrders', (orders) => {
+    orders.forEach((order) => {
+      document.getElementById(`card-order-${order.id}`)?.remove()
+      document.getElementById(`dropzone-${order.status}`).insertAdjacentHTML(
+        'beforeend',
+        renderCard(order.id)
+      )
+    })
+
+    if(initDrag) initDrag()
+  })
+
+  socket.on('receivedOrder', (order) => {
+    console.log('[received]', { order })
+    document.getElementById(`card-order-${order.id}`)?.remove()
+    document.getElementById(`dropzone-${order.status}`).insertAdjacentHTML(
+      'beforeend',
+      renderCard(order.id)
+    )
+
+    if(initDrag) initDrag()
+  })
+
+  function addOrder(){ socket.emit('addOrder', { status: 'to-do' }) }
+  function renderCard(id){
+    return `
+      <div class="card" draggable="true" id="card-order-${id}">
+        <div class="content">#<span>${id}</span></div>
+      </div>
+    `
+  }
 </script>

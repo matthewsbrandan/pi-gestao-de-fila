@@ -1,10 +1,17 @@
 <%- include('layout/header'); -%>
-  <div class="bg-light p-5 rounded my-auto">
-    <h1>Adicione novos pedidos ou atualize existentes</h1>
-    <p class="lead">Clique em adicionar, ou arraste os existentes para atualizar o status</p>
-    <div class="d-flex" style="gap: .5rem">
-      <a class="btn btn-lg btn-primary" href="#" role="button">Adicionar</a>
-      <a class="btn btn-lg btn-dark" href="/fila" role="button">Painel de Pedidos</a>
+  <div class="bg-light px-5 py-4 rounded d-flex justify-content-between">
+    <h2>Fila de Pedidos</h2>
+
+    <div class="d-flex align-items-center" style="gap: .5rem;">
+      <button
+        type="button"
+        class="btn btn-primary"
+        onclick="addOrder()"
+      >Adicionar</button>
+      <a class="btn btn-dark" href="/fila" role="button">Painel de Pedidos</a>
     </div>
   </div>
+  <%- include('utils/drag-and-drop'); -%>
+  <script src="/js/drag-and-drop.js"></script>
+  <%- include('js/socket') -%>
 <%- include('layout/footer'); -%>

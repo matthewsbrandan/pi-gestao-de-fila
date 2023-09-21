@@ -3,7 +3,7 @@ import { User } from "../../domain/entities/User";
 
 export interface HeaderOptionsType{
   import?: {
-    css?: ('modal.css')[]
+    css?: ('modal.css' | 'drag-and-drop.css')[]
   }
 }
 export class Controller{

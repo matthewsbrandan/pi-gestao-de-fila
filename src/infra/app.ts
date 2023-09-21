@@ -78,33 +78,41 @@ app.use((req, res, next) => {
 app.use(router)
 
 let lastIndex = 100;
-let orders : { id: number, status: 'in-progress' | 'concluded' }[] = []
+let orders : { id: number, status: 'to-do' | 'pending' | 'finished' }[] = []
 io.on('connection', (socket) => {
   console.log(`Socket conectado ${socket.id}`);
 
   socket.emit('previousOrders', orders);
 
-  socket.on('addOrder', (data) => {
+  socket.on('addOrder', (order) => {
     const id = lastIndex + 1
-    if(!data.id) lastIndex = id
+    if(!order.id) lastIndex = id
     
-    orders.push({
-      ...data,
-      id: data.id ? data.id : id
-    });
+    const newOrder = {
+      ...order,
+      id: order.id ? order.id : id
+    }
+    orders.push(newOrder);
 
-    socket.broadcast.emit('receivedOrder', data);
+    socket.emit('receivedOrder', newOrder);
+    socket.broadcast.emit('receivedOrder', newOrder);
   });
 
   socket.on('removeOrder', (id) => {
     orders = orders.filter((o) => o.id !== id)
     socket.broadcast.emit('removedOrder', id);
   })
+
+  socket.on('updateOrder', (order) => {
+    orders = orders.map(o => o.id === order.id ? order : o)
+
+    socket.broadcast.emit('receivedOrder', order);
+  })
 });
 
 
-const port = process.env.SERVER_PORT || 3001
+const port = process.env.SERVER_PORT || 3000
 
-app.listen(port, () => console.log(`server running on port ${port}`))
+server.listen(port, () => console.log(`server running on port ${port}`))
 
 export { app }

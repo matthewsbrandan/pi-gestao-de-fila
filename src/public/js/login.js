@@ -21,9 +21,7 @@ function login(event){
   }).then((response) => response.json()).then((data) => {
     notify(data.result ? 'success' : 'error', data.response)
 
-    if(data.result) setTimeout(
-      () => window.location.reload(), 2 * 1000
-    )
+    if(data.result) window.location.reload()
   }).catch((err) => {
     notify('error', err.response ?? 'Houve um erro ao processar a resposta do login');
   }).finally(() => event.target.classList.remove('is-loading')) 
