@@ -1,6 +1,5 @@
 import express from 'express';
 import { StartQueueFactory } from '../../factories/Queue/StartQueueFactory';
-import { middlewareAuth } from '../middleware/auth';
 import { QueueManageFactory } from '../../factories/WebView/QueueManageFactory';
 import { route } from '../routenames';
 

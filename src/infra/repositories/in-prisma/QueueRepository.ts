@@ -2,7 +2,6 @@ import { Queue } from "../../../domain/entities/Queue";
 import { CreateQueueProps, IQueueRepository } from "../../../domain/repositories/IQueueRepository";
 import db from "../../config/prisma";
 
-const queues : Queue[] = []
 export class QueueRepository implements IQueueRepository{
   _instance(response: any){
     return new Queue(response, response.id ?? undefined)

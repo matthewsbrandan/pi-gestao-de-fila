@@ -17,8 +17,8 @@ export class HomeController extends Controller{
         const queue = await this.findStartedQueue.execute()
         if(queue){          
           if(this.auth_user.type === 'manager') return this.view('manage-queue.ejs', {
-            headerOptions: { import: { css: ['drag-and-drop.css'] } },
-            data: queue,
+            headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
+            data: { queue },
           });
           else return this.view('queue', { data: queue })
         }

@@ -1,17 +1,65 @@
-<div class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
+<!-- DEPENDE DE socket.ejs -->
+<div class="modal modal-sheet bg-secondary py-5" tabindex="-1" role="dialog" id="modalAddOrder">
+  <div class="modal-dialog modal-lg" role="document">
+    <form id="form-add-order" class="modal-content rounded-6 shadow">
+      <div class="modal-header border-bottom-0">
         <h5 class="modal-title">Adicionar novo pedido</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
+      <div class="modal-body pt-4">
+        <div class="form-floating">
+          <input
+            type="text"
+            name="name"
+            id="order-name"
+            class="form-control rounded-4"
+            placeholder="Digite o nome do pedido..."
+            required
+          >
+          <label for="order-name">Nome do pedido</label>
+        </div>
+        <small class="text-muted">Insira um nome para poder identificar o pedido.</small>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      <div class="modal-footer flex-column border-top-0 pb-3">
+        <button
+          type="submit"
+          class="w-100 btn btn-lg rounded-4 btn-primary"
+        >Adicionar</button>
       </div>
-    </div>
+    </form>
   </div>
+  <script>
+    const formAddOrder = document.getElementById('form-add-order')
+    if(formAddOrder) formAddOrder.addEventListener("submit", addOrder);
+
+    function addOrder(e){
+      if(e) e.preventDefault();
+      if(!socket) return;
+
+      const name = document.getElementById('order-name').value;
+      if(!name){
+        notify('error','Atribua um nome ao pedido')
+        return;
+      }
+
+      socket.emit('addOrder', { status: 'pending', name, queue_id }, (res) => {
+        if(!res.result){
+          notify('error', res.response)
+          return;
+        }
+
+        notify('success', res.response)
+
+        renderOrder(res.data)
+
+        if(initDrag) initDrag()
+
+        if(closeModalAddOrder) closeModalAddOrder()
+      })
+    }
+    function closeModalAddOrder(){
+      const closeButton = document.querySelector('#modalAddOrder .btn-close')
+      if(closeButton) closeButton.click();
+    }
+  </script>
 </div>

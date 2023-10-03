@@ -18,6 +18,10 @@ import { User } from '../domain/entities/User'
 import { FindUserByEmailOrPhoneFactory } from './factories/User/FindUserByEmailOrPhoneFactory'
 import { FindUserByIdFactory } from './factories/User/FindUserByIdFactory'
 import { route } from './routes/routenames'
+import { FindOrdersByStartedQueueFactory } from './factories/Order/FindOrdersByStartedQueueFactory'
+import { Order } from '../domain/entities/Order'
+import { CreateOrderFactory } from './factories/Order/CreateOrderFactory'
+import { UpdateOrderFactory } from './factories/Order/UpdateOrderFactory'
 
 const app = express()
 const server = http.createServer(app)
@@ -78,37 +82,94 @@ app.use((req, res, next) => {
 app.use(router)
 
 let lastIndex = 100;
-let orders : { id: number, status: 'to-do' | 'pending' | 'finished' }[] = []
-io.on('connection', (socket) => {
-  console.log(`Socket conectado ${socket.id}`);
 
-  socket.emit('previousOrders', orders);
-
-  socket.on('addOrder', (order) => {
-    const id = lastIndex + 1
-    if(!order.id) lastIndex = id
-    
-    const newOrder = {
-      ...order,
-      id: order.id ? order.id : id
+(async () => {
+  const loadOrders = async (exclude_ids: number[]) => {
+    try{
+      return await FindOrdersByStartedQueueFactory().useCase.execute({
+        exclude_ids,
+        status: ['pending', 'finished']
+      })
+    }catch(e){
+      console.error('[error-on-load-queue]', e.message)
+      return []
     }
-    orders.push(newOrder);
+  }
 
-    socket.emit('receivedOrder', newOrder);
-    socket.broadcast.emit('receivedOrder', newOrder);
+  let orders : Order[] = await loadOrders([])
+  
+  io.on('connection', async (socket) => {
+    let newOrders =  await loadOrders(orders.map(o => o.id))
+    orders.push(...newOrders)
+
+    console.log(`Socket conectado ${socket.id}`);
+  
+    socket.emit('previousOrders', orders);
+  
+    socket.on('addOrder', async (order, cb) => {
+      try{
+        const newOrder = await CreateOrderFactory().useCase.execute(order)
+
+        orders.push(newOrder);
+        socket.broadcast.emit('receivedOrder', newOrder);
+
+        cb({
+          result: true,
+          response: 'Pedido criado com sucesso',
+          data: newOrder
+        })
+      }catch(e){
+        cb({
+          result: false,
+          response: e.message ?? 'Não foi possível criar o pedido'
+        })
+      }
+    });
+  
+    socket.on('removeOrder', (id) => {
+      orders = orders.filter((o) => o.id !== id)
+      socket.broadcast.emit('removedOrder', id);
+    })
+  
+    socket.on('updateOrder', async (order, cb) => {
+      try{
+        const updateOrder = await UpdateOrderFactory().useCase.execute({
+          id: order.id,
+          status: order.status
+        })
+          
+        if(order.status === 'withdrawn'){
+          orders = orders.filter(o => o.id !== updateOrder.id)
+          socket.broadcast.emit(
+            'removedOrder', updateOrder.id
+          );
+        }
+        else{
+          orders = orders.map(o => o.id === updateOrder.id ? updateOrder : o)
+          socket.broadcast.emit(
+            'receivedOrder', updateOrder
+          );
+        }
+
+        socket.broadcast.emit(
+          `order_id:${updateOrder.id}`,
+          updateOrder
+        );
+
+        cb({
+          result: true,
+          response: 'Pedido atualizado',
+          data: updateOrder
+        })
+      }catch(e){
+        cb({
+          result: false,
+          response: e.message ?? 'Não foi possível atualizar o status do pedido'
+        })
+      }      
+    })
   });
-
-  socket.on('removeOrder', (id) => {
-    orders = orders.filter((o) => o.id !== id)
-    socket.broadcast.emit('removedOrder', id);
-  })
-
-  socket.on('updateOrder', (order) => {
-    orders = orders.map(o => o.id === order.id ? order : o)
-
-    socket.broadcast.emit('receivedOrder', order);
-  })
-});
+})()
 
 
 const port = process.env.SERVER_PORT || 3000

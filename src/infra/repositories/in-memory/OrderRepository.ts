@@ -1,5 +1,5 @@
 import { Order, OrderStatus } from "../../../domain/entities/Order";
-import { IOrderRepository } from "../../../domain/repositories/IOrderRepository";
+import { IOrderRepository, OrderFilters } from "../../../domain/repositories/IOrderRepository";
 import { delay } from "./utils";
 
 let orders: Order[] = []
@@ -16,7 +16,7 @@ export class OrderRepository implements IOrderRepository{
 
     return instancied
   }
-  async updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
+  async updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
     await delay()
 
     const findedOrder = this.findOrderById(id)
@@ -30,7 +30,7 @@ export class OrderRepository implements IOrderRepository{
 
     return instancied
   }
-  async removeOrder(id: string): Promise<void> {
+  async removeOrder(id: number): Promise<void> {
     await delay()
 
     let isFinded = false;
@@ -46,7 +46,7 @@ export class OrderRepository implements IOrderRepository{
       'Não foi possível apagar esse pedido'
     )
   }
-  async findOrderById(id: string) : Promise<Order> {
+  async findOrderById(id: number) : Promise<Order> {
     await delay()
 
     const findedOrder = orders.find(o => o.id === id)
@@ -56,10 +56,17 @@ export class OrderRepository implements IOrderRepository{
 
     return this._instance(findedOrder)
   }
-  async findOrdersByQueueId(queue_id: string): Promise<Order[]> {
+  async findOrdersByQueueId(queue_id: number, { exclude_ids, status }:OrderFilters): Promise<Order[]> {
     await delay()
 
-    const findedOrders = orders.filter(o => o.queue_id === queue_id)
+    const findedOrders = orders.filter((o) => {
+      if(o.queue_id !== queue_id) return false;
+
+      if(exclude_ids) return !exclude_ids.includes(o.id)
+      if(status) return status.includes(o.status)
+
+      return true;
+    })
     return findedOrders.map(o => this._instance(o))
   }
 }

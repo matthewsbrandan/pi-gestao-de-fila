@@ -20,7 +20,10 @@ export class QueueManageController extends Controller{
         }
       })
 
-      return this.view('manage-queue.ejs', { data: queue })
+      return this.view('manage-queue.ejs', {
+        headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
+        data: queue
+      })
     } catch (error) {
       this.notify('error', error.message)
       return response.redirect(route.home())

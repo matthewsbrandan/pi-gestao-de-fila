@@ -1,9 +1,4 @@
-<div class="mx-auto boards pb-4" style="overflow-x: auto; max-width: 100%">
-  <div class="board bg-light">
-    <h5 class="title">Aguardando</h5>
-    <div class="dropzone" id="dropzone-to-do">
-    </div>
-  </div>
+<div class="boards pb-4" style="overflow-x: auto; max-width: 100%">
   <div class="board bg-light">
     <h5 class="title">Em Andamento</h5>
     <div class="dropzone" id="dropzone-pending">
@@ -12,6 +7,15 @@
   <div class="board bg-light">
     <h5 class="title">Pronto</h5>
     <div class="dropzone" id="dropzone-finished">
+    </div>
+  </div>
+  <div class="board bg-light">
+    <h5 class="title">Retirado</h5>
+    <small
+      class="text-muted d-block"
+      style="margin: 0 16px; max-width: 16rem; opacity: .8;"
+    >Os pedidos nesta coluna desapareceram após 15 segundos</small>
+    <div class="dropzone" id="dropzone-withdrawn" style="opacity: .5;">
     </div>
   </div>
 </div>

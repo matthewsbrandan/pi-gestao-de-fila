@@ -1,3 +1,5 @@
+// DEPENDE DO SOCKET.ejs
+
 function initDrag(){
   const cards = document.querySelectorAll('.card')
   
@@ -29,7 +31,22 @@ function dragend(e) {
       id: e.target.id.replace('card-order-',''),
       status: e.target.parentElement.id.replace('dropzone-','')
     }
-    socket.emit('updateOrder', order)
+    socket.emit('updateOrder', order, (res) => {
+      if(!res.result){
+        notify('error', res.response)
+        return;
+      }
+
+      renderOrder(res.data)
+      if(res.data.status === 'withdrawn') setTimeout(() => {
+        const card = document.querySelector(
+          `#dropzone-withdrawn #card-order-${res.data.id}`
+        )
+        if(card) card.remove()
+      }, 15 * 1000)
+
+      if(initDrag) initDrag()
+    })
   }
 }
 

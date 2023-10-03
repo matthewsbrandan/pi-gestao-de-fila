@@ -6,7 +6,7 @@
       <button
         type="button"
         class="btn btn-primary"
-        onclick="addOrder()"
+        data-bs-toggle="modal" data-bs-target="#modalAddOrder"
       >Adicionar</button>
       <a class="btn btn-dark" href="/fila" role="button">Painel de Pedidos</a>
     </div>
@@ -14,4 +14,5 @@
   <%- include('utils/drag-and-drop'); -%>
   <script src="/js/drag-and-drop.js"></script>
   <%- include('js/socket') -%>
+  <%- include('utils/modals/add-order') -%>
 <%- include('layout/footer'); -%>

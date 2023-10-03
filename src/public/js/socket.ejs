@@ -1,31 +1,32 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
+  const queue_id = Number("<%- JSON.stringify(data.queue.id) %>");
   var socket = io();
 
   socket.on('previousOrders', (orders) => {
-    orders.forEach((order) => {
-      document.getElementById(`card-order-${order.id}`)?.remove()
-      document.getElementById(`dropzone-${order.status}`).insertAdjacentHTML(
-        'beforeend',
-        renderCard(order.id)
-      )
-    })
+    orders.forEach((order) => renderOrder(order))
 
     if(initDrag) initDrag()
   })
 
   socket.on('receivedOrder', (order) => {
-    console.log('[received]', { order })
+    renderOrder(order)
+
+    if(initDrag) initDrag()
+  })
+
+  socket.on('removedOrder', (order_id) => {    
+    const card = document.querySelector(`#card-order-${order_id}`)
+    if(card) card.remove()
+  })
+
+  function renderOrder(order){
     document.getElementById(`card-order-${order.id}`)?.remove()
     document.getElementById(`dropzone-${order.status}`).insertAdjacentHTML(
       'beforeend',
       renderCard(order.id)
     )
-
-    if(initDrag) initDrag()
-  })
-
-  function addOrder(){ socket.emit('addOrder', { status: 'to-do' }) }
+  }
   function renderCard(id){
     return `
       <div class="card" draggable="true" id="card-order-${id}">
