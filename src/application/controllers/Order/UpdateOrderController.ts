@@ -9,11 +9,16 @@ export class UpdateOrderController extends Controller{
 
   async handle(request: Request, response: Response){
     try {
-      const data = await this.useCase.execute();
+      const { id, status } = request.body;
+
+      const data = await this.useCase.execute({
+        id,
+        status
+      });
 
       return response.status(200).json({
         result: true,
-        response: "Mensagem de sucesso",
+        response: "Pedido atualizado",
         data
       })
     } catch (error) {

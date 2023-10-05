@@ -8,11 +8,21 @@ export class FindUserByEmailOrPhoneController{
 
   async handle(request: Request, response: Response){
     try {
-      const data = await this.useCase.execute();
+      const {
+        options,
+        search,
+        type,
+      } = request.body;
+
+      const data = await this.useCase.execute({
+        options,
+        search,
+        type,
+      });
 
       return response.status(200).json({
         result: true,
-        response: "Mensagem de sucesso",
+        response: "Usuário localizado",
         data
       })
     } catch (error) {

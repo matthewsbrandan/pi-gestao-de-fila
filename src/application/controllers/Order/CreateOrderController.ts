@@ -9,11 +9,23 @@ export class CreateOrderController extends Controller{
 
   async handle(request: Request, response: Response){
     try {
-      const data = await this.useCase.execute();
+      const {
+        id,
+        name,
+        queue_id,
+        status
+      } = request.body;
+
+      const data = await this.useCase.execute({
+        id,
+        name,
+        queue_id,
+        status
+      });
 
       return response.status(200).json({
         result: true,
-        response: "Mensagem de sucesso",
+        response: "Pedido criado com sucesso",
         data
       })
     } catch (error) {

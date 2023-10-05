@@ -8,7 +8,8 @@ export class FindUserByIdController{
 
   async handle(request: Request, response: Response){
     try {
-      const data = await this.useCase.execute();
+      const { id } = request.params;
+      const data = await this.useCase.execute(Number(id));
 
       return response.status(200).json({
         result: true,
