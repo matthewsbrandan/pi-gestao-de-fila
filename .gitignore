@@ -3,3 +3,4 @@
 /prisma/dev.*
 package-lock.json
 .env
+.env.production
