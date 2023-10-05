@@ -19,7 +19,7 @@ export class OrderRepository implements IOrderRepository{
     })
 
     if(!res) throw new Error(
-      'Ordem não encontrada'
+      'Pedido não encontrado'
     )
 
     return this._instance(res);

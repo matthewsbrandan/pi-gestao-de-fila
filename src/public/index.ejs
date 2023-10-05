@@ -2,8 +2,12 @@
   <div class="bg-light p-5 rounded my-auto">
     <h1>Gerenciamento de Fila de Pedidos</h1>
     <p class="lead">Controle sua fila de pedidos e notifique seus clientes no momento em que o pedido estiver pronto</p>
-    <form method="POST" action="<%= route.queue.start() %>">
-      <button type="submit" class="btn btn-lg btn-primary" role="button">Iniciar</a>
-    </form>
+    <% if(data && data.queue){ %>
+      <a href="<%- route.queue.manage() -%>" class="btn btn-lg btn-dark" role="button">Acessar</a>
+    <% } else { %>
+      <form method="POST" action="<%= route.queue.start() %>">
+        <button type="submit" class="btn btn-lg btn-primary" role="button">Iniciar</a>
+      </form>
+    <% } %>
   </div>
 <%- include('layout/footer'); -%>

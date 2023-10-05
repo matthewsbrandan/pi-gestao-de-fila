@@ -3,7 +3,7 @@ import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStar
 import { Controller } from "../Controller";
 import { route } from "../../../infra/routes/routenames";
 
-export class QueueManageController extends Controller{
+export class QueueController extends Controller{
   constructor(
     private findStartedQueue: FindStartedQueueUseCase
   ){ super() }
@@ -20,9 +20,9 @@ export class QueueManageController extends Controller{
         }
       })
 
-      return this.view('manage-queue.ejs', {
+      return this.view('queue.ejs', {
         headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
-        data: { queue, is_management: true } 
+        data: { queue }
       })
     } catch (error) {
       this.notify('error', error.message)

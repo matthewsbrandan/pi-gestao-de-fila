@@ -9,13 +9,15 @@
     <div class="dropzone" id="dropzone-finished">
     </div>
   </div>
-  <div class="board bg-light">
-    <h5 class="title">Retirado</h5>
-    <small
-      class="text-muted d-block"
-      style="margin: 0 16px; max-width: 16rem; opacity: .8;"
-    >Os pedidos nesta coluna desapareceram após 15 segundos</small>
-    <div class="dropzone" id="dropzone-withdrawn" style="opacity: .5;">
+  <% if(data.is_management){ %>
+    <div class="board bg-light">
+      <h5 class="title">Retirado</h5>
+      <small
+        class="text-muted d-block"
+        style="margin: 0 16px; max-width: 16rem; opacity: .8;"
+      >Os pedidos nesta coluna desapareceram após 15 segundos</small>
+      <div class="dropzone" id="dropzone-withdrawn" style="opacity: .5;">
+      </div>
     </div>
-  </div>
+  <% } %>
 </div>

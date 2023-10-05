@@ -26,27 +26,13 @@ function dragend(e) {
 
   this.classList.remove('is-dragging')
 
-  if(socket && e && e.target && e.target.id){
+  if(updateOrder){
     const order = {
       id: e.target.id.replace('card-order-',''),
       status: e.target.parentElement.id.replace('dropzone-','')
     }
-    socket.emit('updateOrder', order, (res) => {
-      if(!res.result){
-        notify('error', res.response)
-        return;
-      }
-
-      renderOrder(res.data)
-      if(res.data.status === 'withdrawn') setTimeout(() => {
-        const card = document.querySelector(
-          `#dropzone-withdrawn #card-order-${res.data.id}`
-        )
-        if(card) card.remove()
-      }, 15 * 1000)
-
-      if(initDrag) initDrag()
-    })
+  
+    updateOrder(order)
   }
 }
 

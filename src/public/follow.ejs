@@ -1,11 +1,69 @@
 <%- include('layout/header'); -%>
   <div class="bg-light p-5 rounded my-auto">
-    <% if (!order_id) { %>
-      <h1>Selecione o Pedido</h1>
-      <p class="lead">Selecione o pedido que deseja acompanhar...</p>
+    <% if (!data || !data.order) { %>
+      <form id="form-follow-order">
+        <h1>Acompanhe seu Pedido</h1>
+        <p class="lead">Digite o número do seu pedido...</p>
+  
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            id="order-number"
+            class="form-control rounded-4 bg-transparent"
+            placeholder="Número do pedido..."
+            required
+          >
+          <label for="order-number" class="text-muted">Número do pedido</label>
+        </div>
+  
+        <button
+          type="submit"
+          class="btn btn-lg btn-dark mx-auto"
+          role="button"
+        >Acompanhar</a>
+      </form>
     <% }else{ %>
-      <h1>Aguardando Pedido <span class="text-primary">#<%= order_id %></span></h1>
-      <p class="lead">Seu pedido está sendo preparado...</p>
+      <div id="container-follow-data">
+        <% if(data.order.status === 'pending'){ %>
+          <h1>
+            <span class="title">Aguardando Pedido</span>
+            <span class="text-primary">#<%= data.order.id %></span>
+          </h1>
+          <p class="lead">Seu pedido está sendo preparado...</p>
+        <% }else if(data.order.status === 'finished'){ %>
+          <h1>
+            <span class="title">Pronto para retirada</span>
+            <span class="text-primary">#<%= data.order.id %></span>
+          </h1>
+          <p class="lead">Retire seu pedido</p>
+        <% }else { %>
+          <h1>
+            <span class="title">Retirado</span>
+            <span class="text-primary">#<%= data.order.id %></span>
+          </h1>
+          <p class="lead">Seu pedido já foi retirado</p>
+        <% } %>
+      </div>
     <% } %>
   </div>
+  <script>
+    const formFollowOrder = document.getElementById('form-follow-order')
+    if(formFollowOrder) formFollowOrder.addEventListener('submit', followOrder)
+
+    function followOrder(e){
+      e.preventDefault()
+
+      const order_id = document.getElementById('order-number').value;
+      if(!order_id){
+        notify('error', 'Digite o número do seu pedido')
+        return;
+      }
+
+      window.location.href = "<%- route.queue.following('@order_id') -%>".replace(
+        '@order_id', order_id
+      )
+    }
+
+    const order_id = "<%- data.order_id -%>";
+  </script>
 <%- include('layout/footer'); -%>

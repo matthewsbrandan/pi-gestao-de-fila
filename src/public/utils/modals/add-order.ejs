@@ -30,9 +30,9 @@
   </div>
   <script>
     const formAddOrder = document.getElementById('form-add-order')
-    if(formAddOrder) formAddOrder.addEventListener("submit", addOrder);
+    if(formAddOrder) formAddOrder.addEventListener("submit", handleAddOrder);
 
-    function addOrder(e){
+    function handleAddOrder(e){
       if(e) e.preventDefault();
       if(!socket) return;
 
@@ -42,20 +42,7 @@
         return;
       }
 
-      socket.emit('addOrder', { status: 'pending', name, queue_id }, (res) => {
-        if(!res.result){
-          notify('error', res.response)
-          return;
-        }
-
-        notify('success', res.response)
-
-        renderOrder(res.data)
-
-        if(initDrag) initDrag()
-
-        if(closeModalAddOrder) closeModalAddOrder()
-      })
+      addOrder(name)
     }
     function closeModalAddOrder(){
       const closeButton = document.querySelector('#modalAddOrder .btn-close')

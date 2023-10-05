@@ -2,24 +2,16 @@ import express from 'express';
 import { StartQueueFactory } from '../../factories/Queue/StartQueueFactory';
 import { QueueManageFactory } from '../../factories/WebView/QueueManageFactory';
 import { route } from '../routenames';
+import { QueueFollowFactory } from '../../factories/WebView/QueueFollowFactory';
+import { QueueFactory } from '../../factories/WebView/QueueFactory';
 
 // --prefix /fila
 const queueRouter = express.Router();
 
-queueRouter.get(route.queue.home(), (req, res) => {
-  req.flash('message', 'error: Esta funcionalidade ainda não está liberada');
-  res.redirect('/');
-  // res.render('queue.ejs')
-})
-// middlewareAuth,
+queueRouter.get(route.queue.home(), (req, res) => QueueFactory().handle(req, res))
 queueRouter.post(route.queue.start(), (req, res) => StartQueueFactory().controller.handle(req,res))
-// middlewareAuth,
 queueRouter.get(route.queue.manage(), (req, res) => QueueManageFactory().handle(req, res))
-queueRouter.get(route.queue.follow(), (req, res) => res.render('follow.ejs', { order_id: undefined }))
-queueRouter.get(route.queue.following(':order_id'), (req, res) => {
-  res.render('follow.ejs', {
-    order_id: req.params.order_id
-  })
-})
+queueRouter.get(route.queue.follow(), (req, res) => QueueFollowFactory().handle(req, res))
+queueRouter.get(route.queue.following(':order_id'), (req, res) => QueueFollowFactory().handle(req, res))
 
 export default queueRouter;
