@@ -1,13 +1,136 @@
 <%- include('layout/header'); -%>
-  <div class="bg-light p-5 rounded my-auto">
+  <div class="bg-light p-5 rounded mb-4">
     <h1>Gerenciamento de Fila de Pedidos</h1>
-    <p class="lead">Controle sua fila de pedidos e notifique seus clientes no momento em que o pedido estiver pronto</p>
+    <p class="lead">Controle sua fila de pedidos e notifique seus clientes no momento em que o pedido estiver pronto</p>    
+    
+    <nav class="navbar navbar-expand-lg bg-dark rounded mt-4">
+      <div class="container-fluid">
+        <% if(data && data.queue){ %>
+          <a
+            class="navbar-brand text-white"
+            href="<%- route.queue.manage() -%>"
+            style="font-size: var(--bs-body-font-size);"
+          >Acessar Fila</a>
+        <% } else { %>
+          <button
+            type="button"
+            class="navbar-brand text-white"
+            style="font-size: var(--bs-body-font-size);"          
+            onclick="document.getElementById('submit-start-queue').click()"
+          >Iniciar Fila</button>
+        <% } %>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(250, 250, 250, 0.55);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link  text-muted" href="#">Produtos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  text-muted" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <form method="post" action="<%- route.auth.logout() -%>">
+                <button type="submit" class="btn nav-link text-muted">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="row">    
     <% if(data && data.queue){ %>
-      <a href="<%- route.queue.manage() -%>" class="btn btn-lg btn-dark" role="button">Acessar</a>
+      <div class="col-12 col-md-6">
+        <div class="card text-bg-light mb-3" style="
+          border: none;
+          box-shadow: 0 0 2px #0002;
+        ">
+          <div class="card-header" style="
+            font-size: .75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding-top: .2rem;
+            padding-bottom: .2rem;
+            border: none;
+          ">Fila Atual</div>
+          <div class="card-body pb-2">
+            <div>
+              <canvas id="chart-current-queue"></canvas>
+            </div>
+            <div class="d-flex justify-content-between align-items-center text-muted">
+              <small>iniciada em:</small>
+              <small>01/10/2023 13:00</small>
+            </div>
+          </div>
+        </div>      
+      </div>
     <% } else { %>
-      <form method="POST" action="<%= route.queue.start() %>">
-        <button type="submit" class="btn btn-lg btn-primary" role="button">Iniciar</a>
+      <form method="POST" action="<%= route.queue.start() %>" class="d-none">
+        <button
+          type="submit"
+          class="btn btn-lg btn-primary"
+          id="submit-start-queue"
+          role="button"
+        ></button>
       </form>
     <% } %>
+    <div class="col-12 col-md-6">
+      <div
+        class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded"
+        style="height: 100%;"
+      >
+        O gráfico de dias ainda não está disponível
+      </div>
+    </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('chart-current-queue');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: 12 }).map((_, i) => i + 1),
+        datasets: [{
+          label: 'Pedidos por hora',
+          data: [0, 20, 20, 60, 60, 120, 180, 120, 125, 105, 110, 170],
+          borderColor: '#f00',
+          fill: false,
+          cubicInterpolationMode: 'monotone',
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: { intersect: false, },
+        scales: {
+          x: {
+            display: true,
+            title: { display: true },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            display: true,
+            title: { display: false },
+            suggestedMin: 0,
+            suggestedMax: 200,
+            grid: {
+              color: "rgba(0, 0, 0, 0.05)"
+            }
+          }
+        }
+      },
+    });
+  </script>
 <%- include('layout/footer'); -%>

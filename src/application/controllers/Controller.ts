@@ -36,7 +36,7 @@ export class Controller{
     this.verifyIfIsInitialized()
 
     const {
-      headerOptions = {},
+      headerOptions = { },
       error = {},
       data = {}
     } = props ?? {}

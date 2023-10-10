@@ -9,7 +9,6 @@ const webRouter = Router()
 webRouter.use('/auth', authRouter)
 
 webRouter.get(route.home(), (req, res) => HomeFactory().handle(req,res))
-
 // --prefix /fila
 webRouter.use('/', queueRouter)
 
