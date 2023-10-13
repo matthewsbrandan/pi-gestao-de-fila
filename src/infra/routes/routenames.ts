@@ -11,5 +11,10 @@ export const route = {
     register: () => '/auth/register',
     login:    () => '/auth/login',
     logout:   () => '/auth/logout'
+  },
+  products: {
+    home: () => '/produtos',
+    import: () => '/produtos/import',
+    update: (product_id: string) => `/produtos/${product_id}`
   }
 }
