@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
+  "prisma": {
+    "seed": "ts-node --transpile-only src/infra/repositories/seeds.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.2.0",
     "bcrypt": "^5.1.1",

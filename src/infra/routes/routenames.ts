@@ -15,6 +15,7 @@ export const route = {
   products: {
     home: () => '/produtos',
     import: () => '/produtos/import',
-    update: (product_id: string) => `/produtos/${product_id}`
+    update: (product_id: string) => `/produtos/${product_id}`,
+    template: () => '/produtos/template'
   }
 }

@@ -174,6 +174,6 @@ let lastIndex = 100;
 
 const port = process.env.SERVER_PORT || 3000
 
-server.listen(port, () => console.log(`server running on port ${port}`))
+server.listen(port, () => console.log(`server running on http://localhost:${port}`))
 
 export { app }

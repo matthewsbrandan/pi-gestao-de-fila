@@ -31,7 +31,7 @@ export class UserRepository implements IUserRepository{
 
     return this._instance(user, options)
   }
-  async createUser(user: User, options?: UserInstanceOptions): Promise<User> {
+  async createUser(user: Omit<User, 'id'>, options?: UserInstanceOptions): Promise<User> {
     if(user.email){
       if(!!await this.findUserByEmailOrPhone({
         search: user.email,

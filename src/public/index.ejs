@@ -14,7 +14,7 @@
         <% } else { %>
           <button
             type="button"
-            class="navbar-brand text-white"
+            class="navbar-brand text-white btn"
             style="font-size: var(--bs-body-font-size);"          
             onclick="document.getElementById('submit-start-queue').click()"
           >Iniciar Fila</button>
@@ -75,18 +75,26 @@
         </div>      
       </div>
     <% } else { %>
-      <form method="POST" action="<%= route.queue.start() %>" class="d-none">
-        <button
-          type="submit"
-          class="btn btn-lg btn-primary"
-          id="submit-start-queue"
-          role="button"
-        ></button>
-      </form>
+      <div class="col-12 col-md-6">
+        <form method="POST" action="<%= route.queue.start() %>" class="d-none">
+          <button
+            type="submit"
+            class="btn btn-lg btn-primary"
+            id="submit-start-queue"
+            role="button"
+          ></button>
+        </form>
+        <div 
+          class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded py-4"
+          style="height: 100%;"
+        >
+          Não há nenhuma fila em andamento
+        </div>
+      </div>
     <% } %>
     <div class="col-12 col-md-6">
       <div
-        class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded"
+        class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded py-4"
         style="height: 100%;"
       >
         O gráfico de dias ainda não está disponível
