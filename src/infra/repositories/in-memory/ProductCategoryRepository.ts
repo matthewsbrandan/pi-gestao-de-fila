@@ -15,10 +15,9 @@ export const categories = [
 export class ProductCategoryRepository implements IProductCategoryRepository{
   async createManyCategories(newCategories: Omit<ProductCategory, "id">[]): Promise<ProductCategory[]> {
     const nextId = categories.length > 0 ? categories[categories.length - 1].id + 1: 1
-    const createdCategories = newCategories.map((category, index) => ({
-      ...category,
-      id: nextId + index
-    }))
+    const createdCategories = newCategories.map((category, index) => new ProductCategory({
+      ...category
+    }, nextId + index))
 
     categories.push(...createdCategories)
     
@@ -26,5 +25,8 @@ export class ProductCategoryRepository implements IProductCategoryRepository{
   }
   async findAll(): Promise<ProductCategory[]> {
     return categories
+  }
+  async findByNames(names: string[]): Promise<ProductCategory[]> {
+    return categories.filter(category => names.includes(category.name))
   }
 }

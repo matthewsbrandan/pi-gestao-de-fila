@@ -47,10 +47,9 @@ export class ProductRepository implements IProductRepository{
     )
 
     const nextId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
-    const createdProducts = newProducts.map((product, index) => ({
-      id: nextId + index,
+    const createdProducts = newProducts.map((product, index) => new Product({
       ...product
-    }))
+    }, nextId + index))
 
     products.push(...createdProducts)
 

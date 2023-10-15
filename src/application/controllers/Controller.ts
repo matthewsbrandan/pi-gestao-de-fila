@@ -6,6 +6,7 @@ export interface HeaderOptionsType{
     css?: ('modal.css' | 'drag-and-drop.css')[]
   }
 }
+export type NotifyTypes = 'error' | 'success' | 'info'
 export class Controller{
   protected request : Request
   protected response : Response
@@ -51,9 +52,15 @@ export class Controller{
     })
   }
 
-  notify(type: 'error' | 'success' | 'info', message: string){
+  notify(type: NotifyTypes, message: string){
     this.verifyIfIsInitialized()
 
     this.request.flash('message', `${type}: ${message}`);
+  }
+
+  redirectWithMessage(to: string, type: NotifyTypes, message: string){
+    this.notify(type,message)
+
+    return this.response.redirect(to)
   }
 }

@@ -1,5 +1,5 @@
 <div class="modal bg-secondary py-5" tabindex="-1" role="dialog" id="modalImport">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog" role="document">
     <form
       class="modal-content rounded-6 shadow"
       action="<%- route.products.import() -%>"
@@ -10,7 +10,7 @@
         <h5 class="modal-title">Importar Planilha</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body py-0">
+      <div class="modal-body pt-0">
         <p>Faça o upload da sua planilha de produtos, seguindo o modelo disponibilizado</p>
         <a
           href="<%- route.products.template() -%>"
