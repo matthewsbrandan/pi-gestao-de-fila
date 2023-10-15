@@ -108,7 +108,13 @@ let lastIndex = 100;
   
     socket.on('addOrder', async (order, cb) => {
       try{
-        const newOrder = await CreateOrderFactory().useCase.execute(order)
+        const newOrder = await CreateOrderFactory().useCase.execute({
+          name: order.name,
+          queue_id: order.queue_id,
+          status: order.status,
+          total_price: 0,
+          user_id: 1
+        })
 
         orders.push(newOrder);
         socket.broadcast.emit('receivedOrder', newOrder);

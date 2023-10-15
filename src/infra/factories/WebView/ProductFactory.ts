@@ -1,7 +1,7 @@
 import { ProductController } from "../../../application/controllers/WebView/ProductController";
 import { ProductsInCategoriesUseCase } from "../../../domain/useCases/WebView/Product/ProductsInCategoriesUseCase";
-import { ProductCategoryRepository } from "../../repositories/in-memory/ProductCategoryRepository";
-import { ProductRepository } from "../../repositories/in-memory/ProductRepository";
+import { ProductCategoryRepository } from "../../repositories/in-prisma/ProductCategoryRepository";
+import { ProductRepository } from "../../repositories/in-prisma/ProductRepository";
 
 export const ProductFactory = () => {
   const categoryRepo = new ProductCategoryRepository();

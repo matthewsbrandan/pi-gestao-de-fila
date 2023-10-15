@@ -1,7 +1,7 @@
 import { ImportProductsController } from "../../../application/controllers/Product/ImportProductsController";
 import { ImportProductsUseCase } from "../../../domain/useCases/Product/ImportProducts/ImportProductsUseCase";
-import { ProductCategoryRepository } from "../../repositories/in-memory/ProductCategoryRepository";
-import { ProductRepository } from "../../repositories/in-memory/ProductRepository";
+import { ProductCategoryRepository } from "../../repositories/in-prisma/ProductCategoryRepository";
+import { ProductRepository } from "../../repositories/in-prisma/ProductRepository";
 
 export const ImportProductsFactory = () => {
   const categoryRepo = new ProductCategoryRepository();
