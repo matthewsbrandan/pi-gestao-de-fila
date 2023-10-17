@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStartedQueue/FindStartedQueueUseCase";
 import { Controller } from "../Controller";
 import { route } from "../../../infra/routes/routenames";
+import { ProductsInCategoriesUseCase } from "../../../domain/useCases/WebView/Product/ProductsInCategoriesUseCase";
 
 export class QueueManageController extends Controller{
   constructor(
-    private findStartedQueue: FindStartedQueueUseCase
+    private findStartedQueue: FindStartedQueueUseCase,
+    private productsUseCase: ProductsInCategoriesUseCase
   ){ super() }
 
   async handle(request: Request, response: Response){
@@ -20,9 +22,15 @@ export class QueueManageController extends Controller{
         }
       })
 
+      const productCategories = await this.productsUseCase.execute()
+
       return this.view('manage-queue.ejs', {
         headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
-        data: { queue, is_management: true } 
+        data: {
+          queue,
+          productCategories,
+          is_management: true
+        } 
       })
     } catch (error) {
       this.notify('error', error.message)
