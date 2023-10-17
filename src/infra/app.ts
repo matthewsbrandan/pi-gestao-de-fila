@@ -22,6 +22,7 @@ import { FindOrdersByStartedQueueFactory } from './factories/Order/FindOrdersByS
 import { Order } from '../domain/entities/Order'
 import { CreateOrderFactory } from './factories/Order/CreateOrderFactory'
 import { UpdateOrderFactory } from './factories/Order/UpdateOrderFactory'
+import { seeds } from './repositories/seeds'
 
 const app = express()
 const server = http.createServer(app)
@@ -84,6 +85,11 @@ app.use(router)
 let lastIndex = 100;
 
 (async () => {
+  try{
+    await seeds()
+    console.log('[seed-successfully]')
+  }catch(e){ console.error('[seed-error]', e) }
+
   const loadOrders = async (exclude_ids: number[]) => {
     try{
       return await FindOrdersByStartedQueueFactory().useCase.execute({
