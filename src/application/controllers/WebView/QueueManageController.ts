@@ -14,6 +14,8 @@ export class QueueManageController extends Controller{
     this.init(request, response)
 
     try {
+      if(!this.auth_user) return this.redirectWithMessage(route.home(), 'error', 'Você deve estar autenticado para acessar essa tela')
+
       const queue = await this.findStartedQueue.execute()
       if(!queue) return this.view('error.ejs', {
         error: {

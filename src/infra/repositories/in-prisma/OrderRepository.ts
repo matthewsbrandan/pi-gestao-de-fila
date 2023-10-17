@@ -6,9 +6,12 @@ export class OrderRepository implements IOrderRepository{
   _instance(response: any){
     return new Order(response, response.id ?? undefined)
   }
-  async addOrder(props: Omit<Order, "id">): Promise<Order> {
+  async addOrder(props: Omit<Order, "id" | "created_at">): Promise<Order> {
     const res = await db.order.create({
-      data: props
+      data: {
+        ...props,
+        created_at: new Date()
+      }
     })
 
     return this._instance(res)
@@ -52,5 +55,17 @@ export class OrderRepository implements IOrderRepository{
     await this.findOrderById(id);
 
     await db.order.delete({ where : { id } })
+  }
+  async findOrdersOnLast30Days(props?: { includes?: ("user" | "queue")[]; }) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+
+    const orders = await db.order.findMany({
+      where: {
+        // created_at: {
+        //   lte
+        // }
+      }
+    })
   }
 }

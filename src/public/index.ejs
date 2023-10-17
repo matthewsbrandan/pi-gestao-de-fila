@@ -36,7 +36,10 @@
               <a class="nav-link  text-muted" href="<%- route.products.home() -%>">Produtos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  text-muted" href="#">Dashboard</a>
+              <a
+                class="nav-link  text-muted"
+                href="<%- route.dashboard.home() -%>"
+              >Dashboard</a>
             </li>
             <li class="nav-item">
               <form method="post" action="<%- route.auth.logout() -%>">
