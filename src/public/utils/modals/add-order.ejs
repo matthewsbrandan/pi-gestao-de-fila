@@ -1,6 +1,6 @@
 <!-- DEPENDE DE socket.ejs -->
 <div class="modal modal-sheet bg-secondary py-5" tabindex="-1" role="dialog" id="modalAddOrder">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" style="width: 100%; max-width:1200px;  height: 100%; max-height: 900px;" role="document">
     <form id="form-add-order" class="modal-content rounded-6 shadow">
       <div class="modal-header border-bottom-0">
         <h5 class="modal-title">Adicionar novo pedido</h5>
@@ -19,6 +19,30 @@
           <label for="order-name">Nome do pedido</label>
         </div>
         <small class="text-muted">Insira um nome para poder identificar o pedido.</small>
+        <!-- aqui -->
+        <div class="form-floating">
+          <input
+            type="text"
+            name="search"
+            class="form-control rounded-4"
+            placeholder="Pesquise por nome ou código"
+            v-model="filter.search"
+            required
+          />
+          <label for="order-name">Filtrar pedido</label>
+        </div>
+        <div class="form-floating">
+          <select
+          class="form-select rounded-4"
+          aria-label="Categoria"
+          id="product-category"
+          v-model="filter.category"
+        >
+          <option value="">Todas Categorias</option>
+
+        </select>
+        </div>
+        <!-- aqui -->
       </div>
       <div class="container">
         <div class="row">
@@ -75,4 +99,18 @@
       if(closeButton) closeButton.click();
     }
   </script>
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+   <script>
+     const app = new Vue({
+       el: '#product-app',
+       data: {
+         filter: {
+           search: '',
+           category: ''
+         }
+       }
+     })
+   </script>
 </div>
+
+
