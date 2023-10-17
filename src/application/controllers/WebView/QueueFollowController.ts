@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStartedQueue/FindStartedQueueUseCase";
 import { Controller } from "../Controller";
 import { route } from "../../../infra/routes/routenames";
-import { Order } from "@prisma/client";
 import { IOrderRepository } from "../../../domain/repositories/IOrderRepository";
+import { Order } from "../../../domain/entities/Order";
 
 export class QueueFollowController extends Controller{
   constructor(

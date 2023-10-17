@@ -10,17 +10,19 @@ export class CreateOrderController extends Controller{
   async handle(request: Request, response: Response){
     try {
       const {
-        id,
         name,
         queue_id,
-        status
+        status,
+        total_price,
+        user_id
       } = request.body;
 
       const data = await this.useCase.execute({
-        id,
         name,
         queue_id,
-        status
+        status,
+        total_price,
+        user_id
       });
 
       return response.status(200).json({
