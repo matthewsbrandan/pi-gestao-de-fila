@@ -6,7 +6,7 @@
         <h5 class="modal-title">Adicionar novo pedido</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body pt-4">
+      <div class="modal-body row">
         <div class="form-floating">
           <input
             type="text"
@@ -20,7 +20,7 @@
         </div>
         <small class="text-muted">Insira um nome para poder identificar o pedido.</small>
         <!-- aqui -->
-        <div class="form-floating">
+        <div class="form-floating col ">
           <input
             type="text"
             name="search"
@@ -31,7 +31,7 @@
           />
           <label for="order-name">Filtrar pedido</label>
         </div>
-        <div class="form-floating">
+        <div class="form-floating col">
           <select
           class="form-select rounded-4"
           aria-label="Categoria"
@@ -40,32 +40,20 @@
         >
           <option value="">Todas Categorias</option>
 
-        </select>
+          </select>
         </div>
         <!-- aqui -->
       </div>
       <div class="container">
         <div
-        class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
-        style="height: 100%;"
-      >
-      <div class="m-2" style="
-      flex: 1;
-      height: 1px;
-      border: 1px dashed #0002;
-      border-top: 0;
-      border-left: 0;
-      border-right: 0;
-    "></div>
-    <span> product.price_formatted</span>
-
-      <!-- aqui -->
-        <div class="d-flex flex-column" style="max-width: 70%;">
-          <span>
-            <b> product.id </b>  product.name 
-          </span>
-          <small class="text-muted opacity-50"> product.description </small>
-        </div>
+          class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
+          style="height: 100%;">
+          <div class="d-flex flex-column" style="max-width: 70%;">
+            <span>
+              <b> product.id </b>  product.name 
+            </span>
+            <small class="text-muted opacity-50"> product.description </small>
+          </div>
         <!-- aqui -->
 
       </div>
@@ -77,6 +65,7 @@
       </div>
     </form>
   </div>
+  
   <script>
     const formAddOrder = document.getElementById('form-add-order')
     if(formAddOrder) formAddOrder.addEventListener("submit", handleAddOrder);
