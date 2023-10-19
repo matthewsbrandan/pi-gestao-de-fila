@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  api:
+    build: .
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 5555:5555
+    environment:
+    - SERVER_PORT=${SERVER_PORT}
+    - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - ./prisma:/prisma
+    command: npm run dev

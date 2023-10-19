@@ -1,0 +1,142 @@
+<%- include('../layout/header'); -%>
+  <div class="bg-light p-5 rounded mb-4">
+    <h1>Gerenciamento de Produtos</h1>
+    <p class="lead">Controle seus produtos para poder realizar os pedidos</p>
+    
+    <nav class="navbar navbar-expand-lg bg-dark rounded mt-4">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand text-white"
+          style="font-size: var(--bs-body-font-size);"
+          href="<%- route.products.home() -%>"
+        >Produtos</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(250, 250, 250, 0.55);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a
+                class="nav-link text-muted"
+                href="<%- route.home() -%>"
+              >Filas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  text-muted" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <form method="post" action="<%- route.auth.logout() -%>">
+                <button type="submit" class="btn nav-link text-muted">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <style>
+    @media (max-width: 740px){
+      #action-bar{
+        flex-direction: column;
+      }
+      #action-bar > *{
+        width: 100%;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+  <div class="mb-4" id="product-app">
+    <nav class="d-flex justify-content-between align-items-center mb-4 px-2" style="gap: 1rem;" id="action-bar">
+      <div class="row" style="flex: 1; max-width: 35rem;">
+        <div class="col-12 col-sm-6 mb-2">
+          <input
+            type="text"
+            name="search"
+            class="form-control rounded-4"
+            placeholder="Pesquise por nome ou código"
+            v-model="filter.search"
+            required
+          />
+        </div>
+        <div class="col-12 col-sm-6 mb-2">
+          <select
+            class="form-select rounded-4"
+            aria-label="Categoria"
+            id="product-category"
+            v-model="filter.category"
+          >
+            <option value="">Todas Categorias</option>
+            <% data.productCategories.forEach(category => { %>
+              <option value="<%- category.id -%>"><%- category.name -%></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-dark mb-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalImport"
+      >Importar Produtos</button>
+    </nav>
+    <% if(data.productCategories && data.productCategories.length > 0){ data.productCategories.forEach((category) => { %>
+      <div class="bg-light p-4" v-if="!filter.category || filter.category === '<%- category.id -%>'">
+        <strong><%- category.name -%></strong>
+      </div>
+      <div class="row mb-2" v-if="!filter.category || filter.category === '<%- category.id -%>'">
+        <% category.products.forEach((product) => { %>
+          <div class="col-12 col-md-6" v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)">
+            <div
+              class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
+              style="height: 100%;"
+            >
+              <div class="d-flex flex-column" style="max-width: 70%;">
+                <span>
+                  <b><%- product.id -%> -</b> <%- product.name -%>
+                </span>
+                <small class="text-muted opacity-50"><%- product.description -%></small>
+              </div>
+              <div class="m-2" style="
+                flex: 1;
+                height: 1px;
+                border: 1px dashed #0002;
+                border-top: 0;
+                border-left: 0;
+                border-right: 0;
+              "></div>
+              <span><%- product.price_formatted -%></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% }) }else{ %>
+      <div
+        class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded py-4"
+        style="height: 100%;"
+      >
+        Não há nenhuma categoria de produto cadastrada
+      </div>
+    <% } %>
+  </div>
+  <%- include('../utils/modals/import') -%>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  <script>
+    const app = new Vue({
+      el: '#product-app',
+      data: {
+        filter: {
+          search: '',
+          category: ''
+        }
+      }
+    })
+  </script>
+<%- include('../layout/footer'); -%>

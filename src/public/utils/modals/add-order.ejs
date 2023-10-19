@@ -1,69 +1,106 @@
 <!-- DEPENDE DE socket.ejs -->
-<div class="modal modal-sheet bg-secondary py-5" tabindex="-1" role="dialog" id="modalAddOrder">
-  <div class="modal-dialog modal-xl" style="width: 100%; max-width:1200px;  height: 100%; max-height: 900px;" role="document">
-    <form id="form-add-order" class="modal-content rounded-6 shadow">
+<div class="modal bg-secondary py-5" tabindex="-1" role="dialog" id="modalAddOrder">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content rounded-6 shadow">
       <div class="modal-header border-bottom-0">
         <h5 class="modal-title">Adicionar novo pedido</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body row">
-        <div class="form-floating">
-          <input
-            type="text"
-            name="name"
-            id="order-name"
-            class="form-control rounded-4"
-            placeholder="Digite o nome do pedido..."
-            required
-          >
-          <label for="order-name">Nome do pedido</label>
+      <div class="modal-body pt-4">
+        <style>
+          @media (max-width: 740px){
+            #action-bar{
+              flex-direction: column;
+            }
+            #action-bar > *{
+              width: 100%;
+              max-width: 100% !important;
+            }
+          }
+        </style>
+        <div class="mb-4" id="product-app">
+          <nav class="d-flex justify-content-between align-items-center mb-4 px-2" style="gap: 1rem;" id="action-bar">
+            <div class="row" style="flex: 1; max-width: 35rem;">
+              <div class="col-12 col-sm-6 mb-2">
+                <input
+                  type="text"
+                  name="search"
+                  class="form-control rounded-4"
+                  placeholder="Pesquise por nome ou código"
+                  v-model="filter.search"
+                  required
+                />
+              </div>
+              <div class="col-12 col-sm-6 mb-2">
+                <select
+                  class="form-select rounded-4"
+                  aria-label="Categoria"
+                  id="product-category"
+                  v-model="filter.category"
+                >
+                  <option value="">Todas Categorias</option>
+                  <% data.productCategories.forEach(category => { %>
+                    <option value="<%- category.id -%>"><%- category.name -%></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </nav>
+          <% if(data.productCategories && data.productCategories.length > 0){ data.productCategories.forEach((category) => { %>
+            <div class="bg-light p-4" v-if="!filter.category || filter.category === '<%- category.id -%>'">
+              <strong><%- category.name -%></strong>
+            </div>
+            <div class="row mb-2" v-if="!filter.category || filter.category === '<%- category.id -%>'">
+              <% category.products.forEach((product) => { %>
+                <div class="col-12 col-md-6" v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)">
+                  <div
+                    class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
+                    style="height: 100%;"
+                  >
+                    <div class="d-flex flex-column" style="max-width: 70%;">
+                      <span>
+                        <b><%- product.id -%> -</b> <%- product.name -%>
+                      </span>
+                      <small class="text-muted opacity-50"><%- product.description -%></small>
+                    </div>
+                    <div class="m-2" style="
+                      flex: 1;
+                      height: 1px;
+                      border: 1px dashed #0002;
+                      border-top: 0;
+                      border-left: 0;
+                      border-right: 0;
+                    "></div>
+                    <span><%- product.price_formatted -%></span>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% }) }else{ %>
+            <div
+              class="bg-light d-flex align-items-center justify-content-center text-center text-muted rounded py-4"
+              style="height: 100%;"
+            >
+              Não há nenhuma categoria de produto cadastrada
+            </div>
+          <% } %>
         </div>
-        <small class="text-muted">Insira um nome para poder identificar o pedido.</small>
-        <!-- aqui -->
-        <div class="form-floating col ">
-          <input
-            type="text"
-            name="search"
-            class="form-control rounded-4"
-            placeholder="Pesquise por nome ou código"
-            v-model="filter.search"
-            required
-          />
-          <label for="order-name">Filtrar pedido</label>
-        </div>
-        <div class="form-floating col">
-          <select
-          class="form-select rounded-4"
-          aria-label="Categoria"
-          id="product-category"
-          v-model="filter.category"
-        >
-          <option value="">Todas Categorias</option>
-
-          </select>
-        </div>
-        <!-- aqui -->
-      </div>
-      <div class="container">
-        <div
-          class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
-          style="height: 100%;">
-          <div class="d-flex flex-column" style="max-width: 70%;">
-            <span>
-              <b> product.id </b>  product.name 
-            </span>
-            <small class="text-muted opacity-50"> product.description </small>
-          </div>
-        <!-- aqui -->
-
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+        <script>
+          const app = new Vue({
+            el: '#product-app',
+            data: {
+              filter: {
+                search: '',
+                category: ''
+              }
+            }
+          })
+        </script>
       </div>
       <div class="modal-footer flex-column border-top-0 pb-3">
-        <button
-          type="submit"
-          class="w-100 btn btn-lg rounded-4 btn-primary"
-        >Adicionar</button>
       </div>
-    </form>
+    </div>
   </div>
   
   <script>

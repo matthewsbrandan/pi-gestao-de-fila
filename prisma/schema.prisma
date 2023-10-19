@@ -15,10 +15,11 @@ model User {
   name     String
   email    String? @unique
   phone    String? @unique
-  password String
+  password String?
   type     String  @default("client")
 
   queues Queue[]
+  orders Order[]
 
   @@map("users")
 }
@@ -40,12 +41,50 @@ model Queue {
 }
 
 model Order {
-  id       Int    @id @default(autoincrement())
-  name     String
-  status   String
-  queue_id Int
+  id          Int     @id @default(autoincrement())
+  name        String
+  total_price Decimal
+  status      String
+  queue_id    Int
+  user_id     Int
 
+  user  User  @relation(fields: [user_id], references: [id])
   queue Queue @relation(fields: [queue_id], references: [id])
 
   @@map("orders")
+}
+
+model ProductCategory {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  picture     String?
+
+  products Product[]
+
+  @@map("product_categories")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  picture     String?
+  sku         String?
+  category_id Int
+  price       Decimal
+
+  category  ProductCategory @relation(fields: [category_id], references: [id])
+  OrderItem OrderItem[]
+
+  @@map("products")
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  product_id Int
+  quantity   Int
+  unit_price Decimal
+
+  product Product @relation(fields: [product_id], references: [id])
 }

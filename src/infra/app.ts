@@ -22,6 +22,7 @@ import { FindOrdersByStartedQueueFactory } from './factories/Order/FindOrdersByS
 import { Order } from '../domain/entities/Order'
 import { CreateOrderFactory } from './factories/Order/CreateOrderFactory'
 import { UpdateOrderFactory } from './factories/Order/UpdateOrderFactory'
+import { seeds } from './repositories/seeds'
 
 const app = express()
 const server = http.createServer(app)
@@ -85,6 +86,11 @@ app.use(router)
 let lastIndex = 100;
 
 (async () => {
+  try{
+    await seeds()
+    console.log('[seed-successfully]')
+  }catch(e){ console.error('[seed-error]', e) }
+
   const loadOrders = async (exclude_ids: number[]) => {
     try{
       return await FindOrdersByStartedQueueFactory().useCase.execute({
@@ -109,7 +115,13 @@ let lastIndex = 100;
   
     socket.on('addOrder', async (order, cb) => {
       try{
-        const newOrder = await CreateOrderFactory().useCase.execute(order)
+        const newOrder = await CreateOrderFactory().useCase.execute({
+          name: order.name,
+          queue_id: order.queue_id,
+          status: order.status,
+          total_price: 0,
+          user_id: 1
+        })
 
         orders.push(newOrder);
         socket.broadcast.emit('receivedOrder', newOrder);
@@ -175,6 +187,6 @@ let lastIndex = 100;
 
 const port = process.env.SERVER_PORT || 3000
 
-server.listen(port, () => console.log(`server running on port ${port}`))
+server.listen(port, () => console.log(`server running on http://localhost:${port}`))
 
 export { app }

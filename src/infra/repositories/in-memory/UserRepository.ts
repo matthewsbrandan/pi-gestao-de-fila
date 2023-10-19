@@ -45,7 +45,7 @@ export class UserRepository implements IUserRepository{
 
     return this._instance(findedUser, options)
   }
-  async createUser(user: User, options?: UserInstanceOptions): Promise<User> {
+  async createUser(user: Omit<User, 'id'>, options?: UserInstanceOptions): Promise<User> {
     await delay()
 
     if(user.email){

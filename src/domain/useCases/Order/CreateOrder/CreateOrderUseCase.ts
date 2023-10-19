@@ -4,7 +4,7 @@ import { IOrderRepository } from "../../../repositories/IOrderRepository";
 export class CreateOrderUseCase{
   constructor(private orderRepo: IOrderRepository){}
 
-  async execute(order: Order){
+  async execute(order: Omit<Order, 'id'>){
     const createdOrder = await this.orderRepo.addOrder(order);
 
     return createdOrder
