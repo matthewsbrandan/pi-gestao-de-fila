@@ -45,6 +45,7 @@
                 </select>
               </div>
             </div>
+            <%- include('./cart') -%>
           </nav>
           <% if(data.productCategories && data.productCategories.length > 0){ data.productCategories.forEach((category) => { %>
             <div class="bg-light p-4" v-if="!filter.category || filter.category === '<%- category.id -%>'">
@@ -52,7 +53,7 @@
             </div>
             <div class="row mb-2" v-if="!filter.category || filter.category === '<%- category.id -%>'">
               <% category.products.forEach((product) => { %>
-                <div class="col-12 col-md-6" v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)">
+                <div class="col-12 col-md-6" v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)" v-on:click="addProduct('<%- product.id -%>')">
                   <div
                     class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
                     style="height: 100%;"
@@ -85,23 +86,13 @@
             </div>
           <% } %>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-        <script>
-          const app = new Vue({
-            el: '#product-app',
-            data: {
-              filter: {
-                search: '',
-                category: ''
-              }
-            }
-          })
-        </script>
       </div>
+
       <div class="modal-footer flex-column border-top-0 pb-3">
       </div>
     </div>
   </div>
+  
   
   <script>
     const formAddOrder = document.getElementById('form-add-order')
@@ -123,6 +114,25 @@
       const closeButton = document.querySelector('#modalAddOrder .btn-close')
       if(closeButton) closeButton.click();
     }
+    
+    const products = JSON.parse('<%- JSON.stringify(data.productCategories.reduce((accumulate, current) => { return [...accumulate, ...current.products] },[])) %>');
+    function addProduct(id){
+      // console.log(products)
+      const findedProduct = products.find((product) => {return product.id == id})
+      // console.log(findedProduct)
+      if(!findedProduct){
+        notify('error','mensagem erro')
+        return;
+      }
+      const cart = []
+      if(cart.find((item) => item.id === findedProduct.id)) return;
+      cart.push({
+        ...findedProduct, 
+        qtd: 1
+      })
+      console.log(cart)
+    }
+
   </script>
    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
    <script>
