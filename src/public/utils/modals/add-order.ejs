@@ -114,17 +114,16 @@
       const closeButton = document.querySelector('#modalAddOrder .btn-close')
       if(closeButton) closeButton.click();
     }
-    
+    const cart = []
     const products = JSON.parse('<%- JSON.stringify(data.productCategories.reduce((accumulate, current) => { return [...accumulate, ...current.products] },[])) %>');
     function addProduct(id){
-      // console.log(products)
       const findedProduct = products.find((product) => {return product.id == id})
-      // console.log(findedProduct)
       if(!findedProduct){
         notify('error','mensagem erro')
         return;
       }
-      const cart = []
+      
+ 
       if(cart.find((item) => item.id === findedProduct.id)) return;
       cart.push({
         ...findedProduct, 
