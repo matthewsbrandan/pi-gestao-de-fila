@@ -9,8 +9,8 @@
     <script>
       window.addEventListener('load', () => {
         try{
-          const messages = <%- JSON.stringify(messages) %>;
-
+          const messages = JSON.parse('<%- JSON.stringify(messages) %>');
+          
           messages.forEach((data) => {
             try{
               const [type, ...rest] = data.split(':')

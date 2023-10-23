@@ -9,8 +9,14 @@ export class OrderRepository implements IOrderRepository{
   async addOrder(props: Omit<Order, "id" | "created_at">): Promise<Order> {
     const res = await db.order.create({
       data: {
-        ...props,
-        created_at: new Date()
+        name: props.name,
+        total_price: props.total_price,
+        status: props.status,
+        user_id: props.user_id,
+        queue_id: props.queue_id,
+        created_at: new Date(),
+        updated_at: new Date(),
+        device_id: props.device_id
       }
     })
 
@@ -62,10 +68,13 @@ export class OrderRepository implements IOrderRepository{
 
     const orders = await db.order.findMany({
       where: {
-        // created_at: {
-        //   lte
-        // }
-      }
+        created_at: { lte: startDate }
+      },
+      ...(props?.includes ? {
+        include: props.includes.reduce((acc, curr) => ({ ...acc, [curr]: true }),{}) as {}
+      }:{})
     })
+
+    return orders.map(order => this._instance(order))
   }
 }
