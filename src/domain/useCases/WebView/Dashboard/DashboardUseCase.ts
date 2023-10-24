@@ -13,7 +13,7 @@ export class DashboardUseCase{
   ){}
 
   async execute(){
-    const orders = await this.orderRepo.findOrdersOnLast30Days({ includes: ['user'] })
+    const orders = await this.orderRepo.findOrdersOnLast30Days({ includes: ['user', ] })
 
     const ordersByHour : Record<string, Order[]> = {};
 
@@ -67,7 +67,7 @@ export class DashboardUseCase{
       this.orderedInsertion(occurrenceOfUsers, amountAndUser);
     })
 
-    const orderItems = await this.orderItemRepo.findOrderItemsOnLast30Days({
+    const orderItems = await this.orderItemRepo.findByOrderId(orders.map((o) => o.id), {
       includes: ['product']
     })
 

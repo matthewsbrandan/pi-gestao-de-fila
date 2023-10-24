@@ -119,7 +119,8 @@ let lastIndex = 100;
           queue_id: order.queue_id,
           status: order.status,
           total_price: 0,
-          user_id: 1
+          user_id: 1,
+          device_id: 1
         })
 
         orders.push(newOrder);

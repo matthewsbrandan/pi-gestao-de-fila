@@ -1,6 +1,7 @@
 import { Device } from "@prisma/client"
 import { Queue } from "./Queue"
 import { User } from "./User"
+import { OrderItem } from "./OrderItem"
 
 export type OrderStatus = 'pending' | 'finished' | 'withdrawn'
 export class Order{
@@ -19,8 +20,9 @@ export class Order{
   public updated_at?: Date
 
   public user?: User
-  public queue: Queue
-  public device: Device
+  public queue?: Queue
+  public device?: Device
+  public items?: OrderItem[]
   
   constructor(props: Omit<Order, 'id'>, id?: number){
     Object.assign(this, props)

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Controller } from "../Controller";
 import { DashboardUseCase } from "../../../domain/useCases/WebView/Dashboard/DashboardUseCase";
+import { route } from "../../../infra/routes/routenames";
 
 export class DashboardController extends Controller{
   constructor(
@@ -13,16 +14,10 @@ export class DashboardController extends Controller{
       
       const data = await this.useCase.execute();
 
-      return response.status(200).json({
-        result: true,
-        response: "Mensagem de sucesso",
-        data
-      })
+      return this.view('dashboard/index.ejs', { data })
     } catch (error) {
-      return response.status(500).json({
-        result: false,
-        response: error.message
-      })
+      this.notify('error', error.message)
+      return response.redirect(route.home())
     }
   }
 }
