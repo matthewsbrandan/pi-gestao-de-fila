@@ -1,6 +1,14 @@
 <%- include('layout/header'); -%>
   <div class="bg-light px-5 py-4 rounded d-flex justify-content-between">
-    <h2>Fila de Pedidos</h2>
+    <a href="<%- route.home() -%>" class="d-flex align-items-center" style="text-decoration: none; color: inherit">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24" height="24"
+        viewBox="0 0 24 24"
+        style="fill: rgba(0, 0, 0, 1);"
+      ><path d="M13.939 4.939 6.879 12l7.06 7.061 2.122-2.122L11.121 12l4.94-4.939z"></path></svg>
+      <h2>Fila de Pedidos</h2>
+    </a>
 
     <div class="d-flex align-items-center" style="gap: .5rem;">
       <button
