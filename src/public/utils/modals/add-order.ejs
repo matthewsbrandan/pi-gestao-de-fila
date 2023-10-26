@@ -88,7 +88,6 @@
             <% } %>
           </div>
         </div>
-        
         <div class="modal-footer flex-column border-top-0 pb-3">
           <%- include('./cart') -%>
         </div>
@@ -155,7 +154,9 @@
       },
       deleteItem: function(index){
         this.cart.splice(index,1)
-        console.log(index)
+        if(this.cart.length === 0){
+          this.cartOpen = false;
+        }
       }
     } 
    })
