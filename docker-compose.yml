@@ -12,3 +12,20 @@ services:
     volumes:
       - ./prisma:/prisma
     command: npm run dev
+
+# CREATE docker-production.yml:
+# version: '3.4'
+#   app:
+#     labels:
+#       - "traefik.enable=true"
+#       - "traefik.frontend.rule=Host:chamaeu.codewriters.space"
+
+#   reverse-proxy:
+#     image: traefik
+#     command: --api --docker.exposedbydefault=false
+#     ports:
+#       - "80:80"
+#       - "8080:8080"
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+# docker compose -f docker-compose.yml -f docker-production.yml up -d
