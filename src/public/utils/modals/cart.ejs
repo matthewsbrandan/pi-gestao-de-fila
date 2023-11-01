@@ -7,11 +7,13 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close()"></button>
   </div>
   <ul class="list-group">
-    <li v-for="(item,index) in cart" class="list-group-item">
+    <li v-for="(item,index) in cart" class="list-group-item border-0">
 
       <label class="d-flex align-items-center justify-content-between">
         <button class="btn btn-sm btn-danger" v-on:click ="deleteItem(index)">delete</button>
-        {{item.name}}
+        <small class="text-muted">
+          <b>{{item.id}} -</b>
+          {{item.name}}</small>
         <input
           type="number"
           class="form-control"
@@ -21,7 +23,7 @@
       </label>
     </li>
   </ul>
-  <div class="modal-footer border-bottom-8">
+  <div class="modal-footer border-top-0">
     <button
     type="button"
     class="btn btn-sm btn-primary"
