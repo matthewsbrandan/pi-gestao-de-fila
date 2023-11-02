@@ -32,12 +32,13 @@
             type="number"
             class="form-control"
             v-model="item.qtd"
+            @change="(newValue) => handleSetItemQtd(item, newValue)"
             style="max-width: 80px;"
           />
           <button
             class="btn btn-sm btn-danger m-0 ms-1 p-0"
             style="border-radius: 2rem;width: 1.3rem;height: 2.5rem;display: flex;align-items: center;justify-content: center;"
-            v-on:click ="deleteItem(index)"
+            v-on:click ="deleteItem(item.id)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

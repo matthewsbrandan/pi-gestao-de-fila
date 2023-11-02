@@ -161,10 +161,21 @@
         this.cartOpen = false;
         this.cart = []
       },
-      deleteItem: function(index){
+      deleteItem: function(id){
+        const index = this.cart.findIndex((item) => item.id === id)
+        if(index === -1) return;
+
         this.cart.splice(index,1)
         if(this.cart.length === 0){
           this.cartOpen = false;
+        }
+      },
+      handleSetItemQtd: function(item, event){
+        const newValue = event.target.value
+        console.log('[change-qtd]');
+        if(Number(newValue) <= 0){
+          console.log('[called-delete]')
+          this.deleteItem(item.id)
         }
       }
     } 
