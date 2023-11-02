@@ -54,7 +54,11 @@
               </div>
               <div class="row mb-2" v-if="!filter.category || filter.category === '<%- category.id -%>'">
                 <% category.products.forEach((product) => { %>
-                  <div class="col-12 col-md-6" v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)" v-on:click="addProduct('<%- product.id -%>')">
+                  <div
+                    class="col-12 col-md-6 hover-gray-100" style="cursor: pointer"
+                    v-if="!filter.search || '<%- product.id -%>'.includes(filter.search) ||  '<%- product.name -%>'.includes(filter.search)"
+                    v-on:click="addProduct('<%- product.id -%>')"
+                  >
                     <div
                       class="border-bottom d-flex align-items-center justify-content-between text-muted rounded py-2 px-3"
                       style="height: 100%;"
@@ -138,7 +142,12 @@
           notify('error','mensagem erro')
           return;
         }
-        if(this.cart.find((item) => item.id === findedProduct.id)) return;
+        const indexInCart = this.cart.findIndex((item) => item.id === findedProduct.id)
+        if(indexInCart > -1){
+          this.cart[indexInCart].qtd++
+          return;
+        }
+
         this.cart.push({
           ...findedProduct, 
           qtd: 1
