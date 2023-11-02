@@ -20,6 +20,8 @@ export class DashboardController extends Controller{
       
       return this.view('dashboard/index.ejs', { data })
     } catch (error) {
+      console.error('[DashboardController]',error)
+
       this.notify('error', error.message)
       return response.redirect(route.home())
     }

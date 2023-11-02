@@ -41,15 +41,17 @@ model Queue {
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String
   total_price Decimal
   status      String
   queue_id    Int
   user_id     Int
-  created_at  DateTime
-  updated_at  DateTime
-  device_id   Int
+
+  created_at DateTime
+  updated_at DateTime
+
+  device_id Int
 
   user      User        @relation(fields: [user_id], references: [id])
   queue     Queue       @relation(fields: [queue_id], references: [id])
