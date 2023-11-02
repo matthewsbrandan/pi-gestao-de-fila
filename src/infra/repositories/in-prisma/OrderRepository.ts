@@ -8,7 +8,16 @@ export class OrderRepository implements IOrderRepository{
   }
   async addOrder(props: Omit<Order, "id">): Promise<Order> {
     const res = await db.order.create({
-      data: props
+      data: {
+        name: props.name,
+        total_price: props.total_price,
+        status: props.status,
+        user_id: props.user_id,
+        device_id: props.device_id,
+        queue_id: props.queue_id,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
     })
 
     return this._instance(res)

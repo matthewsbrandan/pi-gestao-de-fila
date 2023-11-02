@@ -6,6 +6,7 @@ export class Order{
   public status : OrderStatus = 'pending'
   public user_id: number
   public queue_id: number
+  public device_id?: number
 
   constructor(props: Omit<Order, 'id'>, id?: number){
     Object.assign(this, props)
