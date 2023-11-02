@@ -55,12 +55,33 @@
       </label>
     </li>
   </ul>
-  <div class="modal-footer border-top-0 pb-2 pe-2">    
+  <div class="modal-footer border-top-0 pb-2 pe-2">
     <button
       type="button"
       class="btn btn-sm btn-dark"
       style="border-radius: .5rem; width: 100%;"
-      v-on:click="submitCart"
+      v-on:click="canSubmitCart"
+      v-if="!confirmCompleteCart"
     >Finalizar (<b>R$ {{ cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0) }}</b>)</button>
+
+    <div class="d-flex flex-column" style="width: 100%;" v-if="confirmCompleteCart">
+      <small class="text-muted block mb-2">
+        Clique em fechar pedido para poder finalizar sua compra no total de <b>R$ {{ cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0) }}</b>
+      </small>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-success mb-1"
+        style="border-radius: .5rem; width: 100%;"
+        v-on:click="() => submitCart(true)"
+      >Fechar Pedido</button>
+      
+      <button
+        type="button"
+        class="btn btn-sm btn-light"
+        style="border-radius: .5rem; width: 100%;"
+        v-on:click="() => submitCart(false)"
+      >Continuar Comprando</button>
+    </div>
   </div>
 </div>

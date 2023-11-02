@@ -5,7 +5,13 @@
       <div class="modal-content rounded-6 shadow">
         <div class="modal-header border-bottom-0">
           <h5 class="modal-title">Adicionar novo pedido</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            id="closeModalAddOrder"
+          ></button>
         </div>
         <div class="modal-body pt-4">
           <style>
@@ -133,6 +139,7 @@
          category: ''
        },
        cartOpen: false,
+       confirmCompleteCart: false,
        cart:[] 
      },
      methods: {
@@ -154,8 +161,36 @@
         })
         this.cartOpen = true
       },
-      submitCart: function() {
-        console.log(this.cart)
+      canSubmitCart: function() {
+        this.confirmCompleteCart = true
+      },
+      submitCart: function(close) {
+        if(!close){
+          this.confirmCompleteCart = false
+          return;
+        }
+
+        const total_price = this.cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0)
+
+        socket.emit('addOrder', {
+          name: 'test',
+          queue_id,
+          status: 'pending',
+          total_price,
+          items: this.cart
+        }, (data) => {
+          if(!data.result){
+            console.log(data.response)
+            notify('error', data.response)
+            return;
+          }
+
+          notify('sucess', data.response)
+
+          this.close()
+
+          document.getElementById('closeModalAddOrder')?.click()
+        })
       },
       close: function() {
         this.cartOpen = false;
