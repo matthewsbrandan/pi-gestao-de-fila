@@ -25,7 +25,7 @@
               }
             }
           </style>
-          <div class="mb-4" >
+          <div class="mb-4" v-if="cartStep !== 'customer'">
             <nav class="d-flex justify-content-between align-items-center mb-4 px-2" style="gap: 1rem;" id="action-bar">
               <div class="row" style="flex: 1; max-width: 35rem;">
                 <div class="col-12 col-sm-6 mb-2">
@@ -97,6 +97,80 @@
               </div>
             <% } %>
           </div>
+          <div v-if="cartStep === 'customer'">
+            <form class="px-1" style="margin-bottom: -1rem" v-on:submit="submitOrder">
+              <p class="lead">Preencha os dados do cliente para poder finalizar o pedido</p>
+              <div class="row">
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label for="customer-name" class="form-label small" style="font-weight: 600;">Nome</label>
+                    <input
+                      type="text"
+                      class="form-control rounded-4"
+                      id="customer-name"
+                      placeholder="Nome do cliente"
+                      v-model="customer.name"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="customer-email" class="form-label small" style="font-weight: 600;">Email</label>
+                    <input
+                      type="email"
+                      class="form-control rounded-4"
+                      id="customer-email"
+                      placeholder="Email do cliente"
+                      v-model="customer.email"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="customer-device" class="form-label small" style="font-weight: 600;">Dispositivo (opcional)</label>
+                    <select class="form-select rounded-4" id="customer-device" v-model="customer.device">
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                    <div class="form-text">ID do dispositivo notificação, caso deseje habilitar.</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <h6>Resumo da Compra</h6>
+                  <ul class="list-group" style="
+                    max-height: calc(90vh - 3rem);
+                    overflow-y: auto;
+                  ">
+                    <li v-for="(item,index) in cart" class="list-group-item border-0 hover-gray-100 px-1">
+                      <label class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex flex-column">
+                          <small class="text-muted"><b>{{item.id}} -</b> {{item.name}}</small>
+                          <small class="text-muted" style="font-size: 12px;opacity: .7;">R$ {{ item.price * item.qtd }}</small>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                          {{  item.qtd }}
+                        </div>
+                      </label>
+                    </li>
+                  </ul>
+                  <div class="d-flex justify-content-between align-items-center text-muted mt-2 p-2 border-top" style="gap: 1rem">
+                    <strong>Total</strong>
+                    <span>R$ {{ cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-6">
+                  <button
+                    type="button"
+                    class="btn btn-secondary w-100"
+                    v-on:click="() => submitCart(false)"
+                  >Voltar</button>
+                </div>
+                <div class="col-6"><button type="submit" class="btn btn-primary w-100">Finalizar</button></div>
+              </div>
+              
+            </form>
+          </div>
         </div>
         <div class="modal-footer flex-column border-top-0 pb-3">
           <%- include('./cart') -%>
@@ -129,91 +203,106 @@
   const products = JSON.parse('<%- JSON.stringify(data.productCategories.reduce((accumulate, current) => { return [...accumulate, ...current.products] },[])) %>');
 
 </script>
- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
- <script>
-   const app = new Vue({
-     el: '#product-app',
-     data: {
-       filter: {
-         search: '',
-         category: ''
-       },
-       cartOpen: false,
-       confirmCompleteCart: false,
-       cart:[] 
-     },
-     methods: {
-      addProduct: function(id){
-        const findedProduct = products.find((product) => {return product.id == id})
-        if(!findedProduct){
-          notify('error','mensagem erro')
-          return;
-        }
-        const indexInCart = this.cart.findIndex((item) => item.id === findedProduct.id)
-        if(indexInCart > -1){
-          this.cart[indexInCart].qtd++
-          return;
-        }
-
-        this.cart.push({
-          ...findedProduct, 
-          qtd: 1
-        })
-        this.cartOpen = true
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script>
+  const app = new Vue({
+    el: '#product-app',
+    data: {
+      filter: {
+        search: '',
+        category: ''
       },
-      canSubmitCart: function() {
-        this.confirmCompleteCart = true
+      cartOpen: false,
+      // select | confirm | customer
+      cartStep: 'select',
+      cart:[],
+      customer: {
+        name: '',
+        email: '',
+        device: ''
       },
-      submitCart: function(close) {
-        if(!close){
-          this.confirmCompleteCart = false
-          return;
-        }
-
-        const total_price = this.cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0)
-
-        socket.emit('addOrder', {
-          name: 'test',
-          queue_id,
-          status: 'pending',
-          total_price,
-          items: this.cart
-        }, (data) => {
-          if(!data.result){
-            console.log(data.response)
-            notify('error', data.response)
-            return;
-          }
-
-          notify('sucess', data.response)
-
-          this.close()
-
-          document.getElementById('closeModalAddOrder')?.click()
-        })
-      },
-      close: function() {
-        this.cartOpen = false;
-        this.cart = []
-      },
-      deleteItem: function(id){
-        const index = this.cart.findIndex((item) => item.id === id)
-        if(index === -1) return;
-
-        this.cart.splice(index,1)
-        if(this.cart.length === 0){
-          this.cartOpen = false;
-        }
-      },
-      handleSetItemQtd: function(item, event){
-        const newValue = event.target.value
-        console.log('[change-qtd]');
-        if(Number(newValue) <= 0){
-          console.log('[called-delete]')
-          this.deleteItem(item.id)
-        }
+    },
+    methods: {
+    addProduct: function(id){
+      const findedProduct = products.find((product) => {return product.id == id})
+      if(!findedProduct){
+        notify('error','mensagem erro')
+        return;
       }
-    } 
-   })
- </script>
+      const indexInCart = this.cart.findIndex((item) => item.id === findedProduct.id)
+      if(indexInCart > -1){
+        this.cart[indexInCart].qtd++
+        return;
+      }
+
+      this.cart.push({
+        ...findedProduct, 
+        qtd: 1
+      })
+      this.cartOpen = true
+    },
+    canSubmitCart: function() {
+      this.cartStep = 'confirm'
+    },
+    submitCart: function(close) {
+      if(!close){
+        this.cartStep = 'select'
+        this.cartOpen = true
+        return;
+      }
+
+      this.cartStep = 'customer'
+      this.cartOpen = false
+    },
+    submitOrder: function(e){
+      e.preventDefault()
+
+      console.log(this.customer)
+
+      const total_price = this.cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0)
+
+      socket.emit('addOrder', {
+        name: this.customer.name,
+        queue_id,
+        status: 'pending',
+        total_price,
+        items: this.cart,
+      }, (data) => {
+        if(!data.result){
+          console.log(data.response)
+          notify('error', data.response)
+          return;
+        }
+
+        notify('sucess', data.response)
+
+        this.close()
+
+        document.getElementById('closeModalAddOrder')?.click()
+      })
+    },
+    close: function() {
+      this.cartOpen = false;
+      this.cart = []
+    },
+    deleteItem: function(id){
+      const index = this.cart.findIndex((item) => item.id === id)
+      if(index === -1) return;
+
+      this.cart.splice(index,1)
+      if(this.cart.length === 0){
+        this.cartOpen = false;
+      }
+    },
+    handleSetItemQtd: function(item, event){
+      const newValue = event.target.value
+      console.log('[change-qtd]');
+      if(Number(newValue) <= 0){
+        console.log('[called-delete]')
+        this.deleteItem(item.id)
+      }
+    }
+  } 
+  })
+</script>
 

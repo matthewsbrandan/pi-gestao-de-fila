@@ -30,7 +30,7 @@
         <div class="d-flex align-items-center justify-content-between">
           <input
             type="number"
-            class="form-control"
+            class="form-control rounded-4"
             v-model="item.qtd"
             @change="(newValue) => handleSetItemQtd(item, newValue)"
             style="max-width: 80px;"
@@ -61,10 +61,10 @@
       class="btn btn-sm btn-dark"
       style="border-radius: .5rem; width: 100%;"
       v-on:click="canSubmitCart"
-      v-if="!confirmCompleteCart"
+      v-if="cartStep === 'select'"
     >Finalizar (<b>R$ {{ cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0) }}</b>)</button>
 
-    <div class="d-flex flex-column" style="width: 100%;" v-if="confirmCompleteCart">
+    <div class="d-flex flex-column" style="width: 100%;" v-if="cartStep === 'confirm'">
       <small class="text-muted block mb-2">
         Clique em fechar pedido para poder finalizar sua compra no total de <b>R$ {{ cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0) }}</b>
       </small>
