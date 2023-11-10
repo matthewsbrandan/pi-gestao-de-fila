@@ -12,7 +12,7 @@ export class Order{
   
   public user_id: number
   public queue_id: number
-  public device_id: number
+  public device_id?: number
 
   public created_at?: Date
   public created_at_formatted?: string

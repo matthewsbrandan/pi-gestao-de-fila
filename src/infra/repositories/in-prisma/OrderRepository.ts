@@ -13,10 +13,10 @@ export class OrderRepository implements IOrderRepository{
         total_price: props.total_price,
         status: props.status,
         user_id: props.user_id,
+        device_id: props.device_id,
         queue_id: props.queue_id,
         created_at: new Date(),
         updated_at: new Date(),
-        device_id: props.device_id
       }
     })
 
