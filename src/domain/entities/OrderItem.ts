@@ -6,6 +6,7 @@ export class OrderItem{
   public product_id : number
   public quantity   : number
   public unit_price : number
+  public order_id : number
 
   public product? : Product
   public order?   : Order

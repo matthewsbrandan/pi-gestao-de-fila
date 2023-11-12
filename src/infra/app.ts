@@ -115,13 +115,12 @@ let lastIndex = 100;
   
     socket.on('addOrder', async (order, cb) => {
       try{
-        const newOrder = await CreateOrderFactory().useCase.execute({
-          name: order.name,
+        const { order: newOrder, passwordForFirstAccess } = await CreateOrderFactory().useCase.execute({
+          customer: order.customer,
+          device_id: order.device_id,
           queue_id: order.queue_id,
-          status: order.status,
-          total_price: 0,
-          user_id: 1,
-          device_id: 1
+          total_price: order.total_price,
+          items: order.items,
         })
 
         orders.push(newOrder);
@@ -130,12 +129,27 @@ let lastIndex = 100;
         cb({
           result: true,
           response: 'Pedido criado com sucesso',
-          data: newOrder
+          data: {
+            order: newOrder,
+            passwordForFirstAccess
+          }
         })
       }catch(e){
+        let response = e.message ?? 'Não foi possível criar o pedido'
+        let data = undefined;
+        
+        if(response.includes('@passwordForFirstAccess')){
+          const splited = response.split('@passwordForFirstAccess')
+          if(splited.length === 2){
+            response = splited[0]
+            data = { passwordForFirstAccess: splited[1] }
+          }
+        }
+        
         cb({
           result: false,
-          response: e.message ?? 'Não foi possível criar o pedido'
+          response,
+          data
         })
       }
     });

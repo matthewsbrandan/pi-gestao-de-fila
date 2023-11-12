@@ -20,6 +20,10 @@ export class OrderRepository implements IOrderRepository{
       }
     })
 
+    if(!res) throw new Error(
+      'Não foi possível criar o pedido'
+    )
+
     return this._instance(res)
   }
   async findOrderById(id: number): Promise<Order> {

@@ -69,4 +69,8 @@ export class OrderRepository implements IOrderRepository{
     })
     return findedOrders.map(o => this._instance(o))
   }
+
+  async findOrdersOnLast30Days(props?: { includes?: ("user" | "queue")[]; }): Promise<Order[]> {
+    return orders;
+  }
 }

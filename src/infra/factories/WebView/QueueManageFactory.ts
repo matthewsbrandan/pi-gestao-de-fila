@@ -1,5 +1,6 @@
 import { QueueManageController } from "../../../application/controllers/WebView/QueueManageController";
 import { ProductsInCategoriesUseCase } from "../../../domain/useCases/WebView/Product/ProductsInCategoriesUseCase";
+import { DeviceRepository } from "../../repositories/in-prisma/DeviceRepository";
 import { ProductCategoryRepository } from "../../repositories/in-prisma/ProductCategoryRepository";
 import { ProductRepository } from "../../repositories/in-prisma/ProductRepository";
 import { FindStartedQueueFactory } from "../Queue/FindStartedQueueFactory";
@@ -13,9 +14,12 @@ export const QueueManageFactory = () => {
     productRepo
   );
 
+  const deviceRepo = new DeviceRepository();
+  
   const controller = new QueueManageController(
     findStartedQueue,
-    productsUseCase
+    productsUseCase,
+    deviceRepo
   );
 
   return controller;

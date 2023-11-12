@@ -1,5 +1,13 @@
 <!-- DEPENDE DE socket.ejs -->
 <div id="product-app">
+  <button
+    type="button"
+    class="d-none"
+    id="callModalAddOrder"
+    data-bs-toggle="modal" data-bs-target="#modalAddOrder"
+    v-on:click="reset()"
+  >Adicionar</button>
+
   <div class="modal bg-secondary py-5" tabindex="-1" role="dialog" id="modalAddOrder">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content rounded-6 shadow">
@@ -102,36 +110,53 @@
               <p class="lead">Preencha os dados do cliente para poder finalizar o pedido</p>
               <div class="row">
                 <div class="col-6">
-                  <div class="mb-3">
-                    <label for="customer-name" class="form-label small" style="font-weight: 600;">Nome</label>
-                    <input
-                      type="text"
-                      class="form-control rounded-4"
-                      id="customer-name"
-                      placeholder="Nome do cliente"
-                      v-model="customer.name"
-                      required
-                    />
+                  <div v-if="!cartResponses.includes('first-access')">
+                    <div class="mb-3">
+                      <label for="customer-name" class="form-label small" style="font-weight: 600;">Nome</label>
+                      <input
+                        type="text"
+                        class="form-control rounded-4"
+                        id="customer-name"
+                        placeholder="Nome do cliente"
+                        v-model="customer.name"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="customer-email" class="form-label small" style="font-weight: 600;">Email</label>
+                      <input
+                        type="email"
+                        class="form-control rounded-4"
+                        id="customer-email"
+                        placeholder="Email do cliente"
+                        v-model="customer.email"
+                        required
+                      />
+                    </div>
+                    <% if(data.devices && data.devices.length > 0){ %>
+                      <div class="mb-3">
+                        <label for="customer-device" class="form-label small" style="font-weight: 600;">Dispositivo (opcional)</label>
+                        <select class="form-select rounded-4" id="customer-device" v-model="device_id">
+                          <option value="">Não quero habilitar</option>
+                          <% data.devices.forEach(device => { %>
+                            <option value="<%- device.id -%>">Disposito #<%- device.id -%></option>
+                          <% }) %>
+                        </select>
+                        <div class="form-text">ID do dispositivo de notificação, caso deseje habilitar.</div>
+                      </div>
+                    <% } %>
                   </div>
-                  <div class="mb-3">
-                    <label for="customer-email" class="form-label small" style="font-weight: 600;">Email</label>
-                    <input
-                      type="email"
-                      class="form-control rounded-4"
-                      id="customer-email"
-                      placeholder="Email do cliente"
-                      v-model="customer.email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="customer-device" class="form-label small" style="font-weight: 600;">Dispositivo (opcional)</label>
-                    <select class="form-select rounded-4" id="customer-device" v-model="customer.device">
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                    <div class="form-text">ID do dispositivo notificação, caso deseje habilitar.</div>
+                  <div
+                    v-if="cartResponses.includes('first-access')"
+                    class="d-flex align-items-center justify-content-center text-center flex-column h-100"
+                  >
+                    <h3 class="text-success">Novo cliente cadastrado</h3>
+                    <p class="text-muted">Informe a ele a senha de primeiro acesso:</p>
+
+                    <strong
+                      v-html="passwordForFirstAccess"
+                      class="d-block p-3 bg-light border rounded-4 w-100"
+                    ></strong>
                   </div>
                 </div>
                 <div class="col-6">
@@ -158,17 +183,16 @@
                   </div>
                 </div>
               </div>
-              <div class="row mt-3">
+              <div class="row mt-3" v-if="!cartResponses.includes('done')">
                 <div class="col-6">
                   <button
                     type="button"
                     class="btn btn-secondary w-100"
-                    v-on:click="() => submitCart(false)"
+                    v-on:click="submitCart(false)"
                   >Voltar</button>
                 </div>
                 <div class="col-6"><button type="submit" class="btn btn-primary w-100">Finalizar</button></div>
               </div>
-              
             </form>
           </div>
         </div>
@@ -205,104 +229,129 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script>
+  function callModalAddOrder(){
+    const btn = document.getElementById('callModalAddOrder').click()
+  }
   const app = new Vue({
     el: '#product-app',
     data: {
-      filter: {
-        search: '',
-        category: ''
-      },
+      filter: { search: '', category: '' },
       cartOpen: false,
       // select | confirm | customer
       cartStep: 'select',
+      // first-access | done
+      cartResponses: [],
       cart:[],
-      customer: {
-        name: '',
-        email: '',
-        device: ''
-      },
+      customer: { name: '', email: '' },
+      device_id: '',
+      passwordForFirstAccess: ''
     },
     methods: {
-    addProduct: function(id){
-      const findedProduct = products.find((product) => {return product.id == id})
-      if(!findedProduct){
-        notify('error','mensagem erro')
-        return;
-      }
-      const indexInCart = this.cart.findIndex((item) => item.id === findedProduct.id)
-      if(indexInCart > -1){
-        this.cart[indexInCart].qtd++
-        return;
-      }
-
-      this.cart.push({
-        ...findedProduct, 
-        qtd: 1
-      })
-      this.cartOpen = true
-    },
-    canSubmitCart: function() {
-      this.cartStep = 'confirm'
-    },
-    submitCart: function(close) {
-      if(!close){
-        this.cartStep = 'select'
-        this.cartOpen = true
-        return;
-      }
-
-      this.cartStep = 'customer'
-      this.cartOpen = false
-    },
-    submitOrder: function(e){
-      e.preventDefault()
-
-      console.log(this.customer)
-
-      const total_price = this.cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0)
-
-      socket.emit('addOrder', {
-        name: this.customer.name,
-        queue_id,
-        status: 'pending',
-        total_price,
-        items: this.cart,
-      }, (data) => {
-        if(!data.result){
-          console.log(data.response)
-          notify('error', data.response)
+      addProduct: function(id){
+        const findedProduct = products.find((product) => {return product.id == id})
+        if(!findedProduct){
+          notify('error','mensagem erro')
+          return;
+        }
+        const indexInCart = this.cart.findIndex((item) => item.id === findedProduct.id)
+        if(indexInCart > -1){
+          this.cart[indexInCart].qtd++
           return;
         }
 
-        notify('sucess', data.response)
+        this.cart.push({
+          ...findedProduct, 
+          qtd: 1
+        })
+        this.cartOpen = true
+      },
+      canSubmitCart: function() {
+        this.cartStep = 'confirm'
+      },
+      submitCart: function(close) {
+        if(!close){
+          this.cartStep = 'select'
+          this.cartOpen = true
+          this.passwordForFirstAccess = ''
+          this.cartResponses = []
+          return;
+        }
 
-        this.close()
+        this.cartStep = 'customer'
+        this.cartOpen = false
+      },
+      submitOrder: function(e){
+        e.preventDefault()
 
-        document.getElementById('closeModalAddOrder')?.click()
-      })
-    },
-    close: function() {
-      this.cartOpen = false;
-      this.cart = []
-    },
-    deleteItem: function(id){
-      const index = this.cart.findIndex((item) => item.id === id)
-      if(index === -1) return;
+        const total_price = this.cart.reduce((acc, curr) => acc + (curr.price * curr.qtd), 0)
 
-      this.cart.splice(index,1)
-      if(this.cart.length === 0){
-        this.cartOpen = false;
+        socket.emit('addOrder', {
+          customer: this.customer,
+          device_id: this.device_id  && !isNaN(Number(this.device_id)) ? Number(this.device_id) : undefined,
+          queue_id,
+          total_price,
+          items: this.cart,
+        }, (data) => {
+          this.cartResponses = []
+          if(data.data && data.data.passwordForFirstAccess){
+            this.passwordForFirstAccess = data.data.passwordForFirstAccess
+
+            this.cartResponses.push('first-access')
+          }
+
+          if(!data.result){
+            notify('error', data.response)
+            return;
+          }
+
+          if(!data.data || !data.data.order){
+            console.log(data);
+
+            notify('error', 'Houve um erro inesperado ao lidar com a resposta de criação')
+            return;
+          }
+
+          this.cartResponses.push('done')
+
+          notify('success', data.response)
+
+          renderOrder(data.data.order)
+
+          if(!this.cartResponses.includes('first-access')){
+            this.close()
+  
+            document.getElementById('closeModalAddOrder')?.click()
+          }
+        })
+      },
+      close: function() { this.reset() },
+      reset: function(){
+        this.filter = { search: '', category: '' }
+        this.cartOpen = false
+        this.cartStep = 'select'
+        this.cartResponses = []
+        this.cart = []
+        this.customer = { name: '', email: '' }
+        this.device_id = ''
+      },
+      deleteItem: function(id){
+        const index = this.cart.findIndex((item) => item.id === id)
+        if(index === -1) return;
+
+        this.cart.splice(index,1)
+        if(this.cart.length === 0){
+          this.cartOpen = false;
+        }
+      },
+      handleSetItemQtd: function(item, event){
+        const newValue = event.target.value
+        console.log('[change-qtd]');
+        if(Number(newValue) <= 0){
+          console.log('[called-delete]')
+          this.deleteItem(item.id)
+        }
       }
-    },
-    handleSetItemQtd: function(item, event){
-      const newValue = event.target.value
-      console.log('[change-qtd]');
-      if(Number(newValue) <= 0){
-        console.log('[called-delete]')
-        this.deleteItem(item.id)
-      }
-    }
-  } 
+    } 
   })
 </script>
 

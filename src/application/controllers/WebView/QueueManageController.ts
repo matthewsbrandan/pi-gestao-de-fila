@@ -3,11 +3,13 @@ import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStar
 import { Controller } from "../Controller";
 import { route } from "../../../infra/routes/routenames";
 import { ProductsInCategoriesUseCase } from "../../../domain/useCases/WebView/Product/ProductsInCategoriesUseCase";
+import { IDeviceRepository } from "../../../domain/repositories/IDeviceRepository";
 
 export class QueueManageController extends Controller{
   constructor(
     private findStartedQueue: FindStartedQueueUseCase,
-    private productsUseCase: ProductsInCategoriesUseCase
+    private productsUseCase: ProductsInCategoriesUseCase,
+    private deviceRepo: IDeviceRepository
   ){ super() }
 
   async handle(request: Request, response: Response){
@@ -24,12 +26,15 @@ export class QueueManageController extends Controller{
         }
       })
 
+      const devices = await this.deviceRepo.findAllActiveDevices()
+
       const productCategories = await this.productsUseCase.execute()
 
       return this.view('manage-queue.ejs', {
         headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
         data: {
           queue,
+          devices,
           productCategories,
           is_management: true
         } 
