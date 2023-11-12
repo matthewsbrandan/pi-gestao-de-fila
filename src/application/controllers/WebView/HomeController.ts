@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
 import { FindStartedQueueUseCase } from "../../../domain/useCases/Queue/FindStartedQueue/FindStartedQueueUseCase";
 import { Controller, HeaderOptionsType } from "../Controller";
+import { IOrderRepository } from "../../../domain/repositories/IOrderRepository";
+import { Order } from "../../../domain/entities/Order";
+import { Queue } from "../../../domain/entities/Queue";
+import { DashboardUseCase } from "../../../domain/useCases/WebView/Dashboard/DashboardUseCase";
 
 export class HomeController extends Controller{
   constructor(
-    private findStartedQueue: FindStartedQueueUseCase
+    private findStartedQueue: FindStartedQueueUseCase,
+    private orderRepo: IOrderRepository,
+    private dashUseCase: DashboardUseCase
   ){ super() }
 
   async handle(request: Request, response: Response){
@@ -28,7 +34,9 @@ export class HomeController extends Controller{
           })
         }
 
-        return this.view('index.ejs', { headerOptions, data: { queue } })
+        const { charts } = queue ? await this.getOrderByHour({ queue }) : { charts: { } }
+
+        return this.view('index.ejs', { headerOptions, data: { queue, charts } })
       }
 
       return this.view('welcome.ejs', { headerOptions })
@@ -38,5 +46,26 @@ export class HomeController extends Controller{
         response: error.message
       })
     }
+  }
+
+  async getOrderByHour({ queue }:{ queue: Queue }) : Promise<{ charts: any }> {
+    const orders = await this.orderRepo.findOrdersOnLast30Days()
+
+    const ordersByHour : Record<string, Order[]> = {};
+
+    orders.forEach(order => {
+      if(order.created_at_formatted){
+        if(queue && order.queue_id === queue.id){
+          let ymdh = order.created_at_formatted.split(':')[0]
+          
+          if(ordersByHour[ymdh]) ordersByHour[ymdh].push(order)
+          else ordersByHour[ymdh] = [order]
+        }
+      }
+    })
+
+    const charts = { byHour: this.dashUseCase.handleChartByHour({ ordersByHour }) }
+
+    return { charts }
   }
 }

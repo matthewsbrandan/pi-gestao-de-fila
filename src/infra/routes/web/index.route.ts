@@ -15,6 +15,6 @@ webRouter.get(route.home(), (req, res) => HomeFactory().handle(req,res))
 webRouter.use('/', queueRouter)
 // --prefix /produtos
 webRouter.use('/', productRouter)
-webRouter.get('/dashboard', (req, res) => DashboardFactory().handle(req, res))
+webRouter.get('/dashboard', (req, res) => DashboardFactory().controller.handle(req, res))
 
 export default webRouter

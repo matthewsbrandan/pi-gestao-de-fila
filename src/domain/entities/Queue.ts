@@ -21,17 +21,17 @@ export class Queue{
     if(this.ended_at) this.ended_at_formatted = this.formatDate(this.ended_at)
   }
 
-  formatDate(date){
+  formatDate(date: Date){
     return `${
       date.getFullYear()
     }-${
-      date.getMonth() + 1
+      String(date.getMonth() + 1).padStart(2, '0')
     }-${
-      date.getDate()
+      String(date.getDate()).padStart(2, '0')
     } ${
-      date.getHours()
+      String(date.getHours()).padStart(2, '0')
     }:${
-      date.getMinutes()
+      String(date.getMinutes()).padStart(2, '0')
     }`
   }
 }

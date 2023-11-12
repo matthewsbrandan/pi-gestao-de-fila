@@ -17,5 +17,5 @@ export const DashboardFactory = () => {
 
   const controller = new DashboardController(useCase);
 
-  return controller;
+  return { controller, useCase };
 }

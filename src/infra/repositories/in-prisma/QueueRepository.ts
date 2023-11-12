@@ -3,7 +3,7 @@ import { CreateQueueProps, IQueueRepository } from "../../../domain/repositories
 import db from "../../config/prisma";
 
 export class QueueRepository implements IQueueRepository{
-  _instance(response: any){
+  _instance(response: any) : Queue {
     return new Queue(response, response.id ?? undefined)
   }
 
