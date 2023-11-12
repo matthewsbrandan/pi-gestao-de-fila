@@ -51,6 +51,18 @@ export class OrderRepository implements IOrderRepository{
 
     return responses.map((response) => this._instance(response))
   }
+  async findOrderByQueueIdNotWithdrawed(queue_id: number): Promise<Order | undefined> {
+    const response = await db.order.findFirst({
+      where: {
+        queue_id,
+        status: { not: 'withdrawn' }
+      }
+    })
+    
+    if(!response) return;
+
+    return this._instance(response)
+  }
   async updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
     await this.findOrderById(id);
 

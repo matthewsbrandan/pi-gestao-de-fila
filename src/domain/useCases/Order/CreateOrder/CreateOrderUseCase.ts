@@ -50,12 +50,12 @@ export class CreateOrderUseCase{
 
     let device_id : number | undefined = undefined;
     if(order.device_id){
-      const findedDevice = await this.deviceRepo.findDeviceById(Number(order.device_id))
-      if(!findedDevice) throw new Error(
-        'Dispositivo não encontrado'
-      )
+      device_id = Number(order.device_id)
 
-      device_id = findedDevice.id
+      await this.handleDevice({
+        device_id,
+        queue_id: queue.id
+      })
     }
 
     const [user, passwordForFirstAccess] = await this.handleUser({
@@ -111,6 +111,23 @@ export class CreateOrderUseCase{
         }` : e.message
       )
     }
+  }
+
+  private async handleDevice({ device_id, queue_id }:{ device_id: number, queue_id: number }){
+    if(isNaN(device_id)) throw new Error(
+      'Id do dispositivo inválido'
+    )
+
+    const findedDevice = await this.deviceRepo.findDeviceById(device_id)
+    if(!findedDevice) throw new Error(
+      'Dispositivo não encontrado'
+    )
+
+    const existentOrderWithThisDevice = await this.orderRepo.findOrderByQueueIdNotWithdrawed(queue_id)
+
+    if(existentOrderWithThisDevice) throw new Error(
+      'Já existe um pedido utilizando este dispositivo para notificação'
+    )
   }
 
   private async handleUser({ customer } : {
