@@ -83,9 +83,7 @@ export class OrderRepository implements IOrderRepository{
     startDate.setDate(startDate.getDate() - 30);
 
     const orders = await db.order.findMany({
-      where: {
-        created_at: { lte: startDate }
-      },
+      where: { created_at: { gte: startDate } },
       ...(props?.includes ? {
         include: props.includes.reduce((acc, curr) => ({ ...acc, [curr]: true }),{}) as {}
       }:{})

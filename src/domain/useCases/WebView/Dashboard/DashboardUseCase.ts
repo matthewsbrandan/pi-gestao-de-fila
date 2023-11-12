@@ -25,7 +25,7 @@ export class DashboardUseCase{
     }> = {}
 
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 8);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     sevenDaysAgo.setHours(0,0,0,0)
 
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -37,9 +37,9 @@ export class DashboardUseCase{
       ordersByWeekDay[`${
         sevenDaysAgo.getFullYear()
       }-${
-        sevenDaysAgo.getMonth() + 1
+        String(sevenDaysAgo.getMonth() + 1).padStart(2, '0')
       }-${
-        sevenDaysAgo.getDate()
+        String(sevenDaysAgo.getDate()).padStart(2, '0')
       }`] = { weekday: weekdays[weekday], orders: [] }
     })
 
@@ -84,12 +84,14 @@ export class DashboardUseCase{
     Object.values(products).forEach((amountAndProduct) => {
       this.orderedInsertion(occurrenceOfProducts, amountAndProduct);
     })
-    // [x] volumetria por hora
-    // [x] volumetria por dia da semana
-    // [x] clientes mais frequentes  --- obter os usuários de findOrderOnLast30Days
-    // [x] produtos mais vendido
+
+    const charts = {
+      byHour: this.handleChartByHour({ ordersByHour }),
+      byWeekday: this.handleChartByWeekday({ ordersByWeekDay })
+    }
 
     return {
+      charts,
       weekdays,
       ordersByHour,
       ordersByWeekDay,
@@ -97,12 +99,178 @@ export class DashboardUseCase{
       occurrenceOfProducts,
     }
   }
+
+  handleChartByHour({ ordersByHour }:{
+    ordersByHour: Record<string, Order[]>
+  }) : undefined | { labels: string[], data: number[], suggestedMax: number } {
+    const filledKeys = Object.keys(ordersByHour);
+    if(filledKeys.length === 0) return;
+    
+    const allHours : Record<string, string>= {};
+
+    const formatLabel = ({ date, hour, onlyHour = true }:{ date: string, hour: string, onlyHour?: boolean }) => {
+      if(onlyHour) return `${hour}h`
+
+      const splited = date.split('-')
+
+      return `${splited[1]}/${splited[2]} ${hour}h`
+    }
+
+    filledKeys.forEach((key, i) => {
+      const splited = key.split(' ')
+      if(splited.length !== 2) return;
+
+      const date = splited[0]
+      const hour = splited[1]
+
+      allHours[key] = formatLabel({
+        date,
+        hour
+      }) 
+
+      if(filledKeys.length === (i + 1)) return;
+
+      //#region HANDLE NEXT
+      const next = filledKeys[i + 1]
+
+      const nextSplited = next.split(' ')
+      if(nextSplited.length !== 2) return;
+
+      const nextDate = nextSplited[0]
+      const nextHour = nextSplited[1]
+      //#endregion HANDLE NEXT
+      
+      //#region VALIDATE NEXT DATE
+      if(hour !== '23' && date === nextDate && (Number(hour) + 1) === Number(nextHour)) return;
+
+      const nextDay = new Date(`${date}T${String((
+        new Date()
+      ).getTimezoneOffset() / 60).padStart(2, '0')}:00:00.000z`)
+
+      nextDay.setDate(nextDay.getDate() + 1)
+
+      let expectedNextDate = `${nextDay.getFullYear()}-${
+        String(nextDay.getMonth() + 1).padStart(2, '0')
+      }-${
+        String(nextDay.getDate()).padStart(2, '0')
+      }`
+
+      if(hour === '23' && expectedNextDate === nextDate && '00' === nextHour) return
+      //#endregion VALIDATE NEXT DATE
+
+      const generateHoursToMax = ({ date, nextDate, nextHour, hour, onlyHour = false }:{
+        date: string,
+        nextDate: string,
+        nextHour: number,
+        hour: number,
+        onlyHour?: boolean
+      }) => {
+        const targetHourOnThisDate = date === nextDate ? Number(nextHour) : 23
+        const countHoursToMake = targetHourOnThisDate - Number(hour)
+    
+        Array.from({ length: countHoursToMake }).forEach((_, i) => {
+          const currHour = String(
+            Number(hour) + i + 1
+          ).padStart(2, '0')
+          const key = `${date} ${currHour}`
+
+          allHours[key] = formatLabel({
+            date,
+            hour: currHour,
+            onlyHour
+          })
+        })
+      }
+      
+      if(hour !== '23') generateHoursToMax({
+        date,
+        nextDate,
+        nextHour: Number(hour),
+        hour: Number(hour),
+        onlyHour: true
+      })
+
+      if(nextDate >= expectedNextDate){
+        do{
+          const key = `${expectedNextDate} 00`
+          allHours[key] = formatLabel({
+            date: expectedNextDate,
+            hour: '00',
+            onlyHour: false
+          })
+
+          generateHoursToMax({
+            date: expectedNextDate,
+            nextDate,
+            nextHour: Number(nextHour),
+            hour: 0
+          })
+
+          nextDay.setDate(nextDay.getDate() + 1)
+
+          expectedNextDate = `${nextDay.getFullYear()}-${
+            String(nextDay.getMonth() + 1).padStart(2, '0')
+          }-${
+            String(nextDay.getDate()).padStart(2, '0')
+          }`
+        }while(expectedNextDate <= nextDate)
+      }
+    })
+
+    const labels = [...Object.values(allHours)]
+    const data = Object.keys(allHours).map((label) => ordersByHour[label] ? ordersByHour[label].length : 0)
+
+    const max = Math.max(...data)
+    const suggestedMax = max === 0 ? 5 : Math.ceil(
+      max * 1.1
+    )
+
+    return {
+      labels,
+      data,
+      suggestedMax
+    }
+  }
+
+  handleChartByWeekday({ ordersByWeekDay }:{ 
+    ordersByWeekDay: Record<string, { weekday: string, orders: Order[] }>
+  }) : undefined | {
+    labels: string[], data: number[], suggestedMax: number 
+  } {
+    const translate = {
+      'sunday': 'DOM',
+      'monday': 'SEG',
+      'tuesday': 'TER',
+      'wednesday': 'QUA',
+      'thursday': 'QUI',
+      'friday': 'SEX',
+      'saturday': 'SAB'
+    }
+    const labels : string[] = [];
+    const data : number[] = [];
+
+    Object.values(ordersByWeekDay).forEach((obw) => {
+      labels.push(translate[obw.weekday])
+      data.push(obw.orders.length)
+    })
+
+    const max = Math.max(...data)
+    const suggestedMax = max === 0 ? 5 : Math.ceil(
+      max * 1.1
+    )
+
+    return {
+      suggestedMax,
+      labels,
+      data,
+    }
+  }
   orderedInsertion(sortedArray: any[], item: any) {
     let insertionPosition = 0;
 
     while(
       insertionPosition < sortedArray.length && 
-      sortedArray[insertionPosition].amount < item.amount
+      sortedArray[insertionPosition].amount > item.amount
     ) insertionPosition++;
   
     sortedArray.splice(insertionPosition, 0, item);

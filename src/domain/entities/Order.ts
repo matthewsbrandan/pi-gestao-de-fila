@@ -31,13 +31,13 @@ export class Order{
       this.created_at_formatted = `${
         this.created_at.getFullYear()
       }-${
-        this.created_at.getMonth() + 1
+        String(this.created_at.getMonth() + 1).padStart(2, '0')
       }-${
-        this.created_at.getDate()
+        String(this.created_at.getDate()).padStart(2, '0')
       } ${
-        this.created_at.getHours()
+        String(this.created_at.getHours()).padStart(2, '0')
       }:${
-        this.created_at.getMinutes()
+        String(this.created_at.getMinutes()).padStart(2, '0')
       }`
     }
   }

@@ -13,10 +13,6 @@ export class DashboardController extends Controller{
       this.init(request, response);
       
       const data = await this.useCase.execute();
-
-      return response.json({
-        data
-      })
       
       return this.view('dashboard/index.ejs', { data })
     } catch (error) {
