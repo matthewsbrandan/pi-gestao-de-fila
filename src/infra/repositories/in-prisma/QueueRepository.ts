@@ -35,4 +35,11 @@ export class QueueRepository implements IQueueRepository{
     
     return this._instance(createdQueue);
   }
+
+  async closeQueue(queue_id: number): Promise<void> {
+    await db.queue.update({ 
+      where: { id: queue_id   },
+      data:  { is_open: false }
+    })
+  }
 }

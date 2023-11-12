@@ -4,4 +4,5 @@ export interface CreateQueueProps extends Omit<Queue, 'id' | 'started_at' | 'is_
 export interface IQueueRepository{
   findStartedQueue() : Promise<Queue | undefined>
   createQueue(props: CreateQueueProps) : Promise<Queue>
+  closeQueue(queue_id: number) : Promise<void>
 }
