@@ -23,7 +23,10 @@ export class HomeController extends Controller{
         const queue = await this.findStartedQueue.execute()
       
         if(this.auth_user.type === 'client'){
-          if(queue) return this.view('queue.ejs', { data: { queue } })
+          if(queue) return this.view('queue.ejs', {
+            headerOptions: { import: { css: ['drag-and-drop.css','modal.css'] } },
+            data: { queue, goLogout: true }
+          })
 
           return this.view('error.ejs', {
             error: {

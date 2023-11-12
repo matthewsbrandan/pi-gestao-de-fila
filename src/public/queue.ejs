@@ -5,9 +5,17 @@
         <h2>Pedidos em Andamento</h2>
         <p class="lead" style="font-size: 1.1rem;">Acompanhando os pedidos em andamento</p>
       </div>
-      <a href="<%- route.home() -%>" class="btn btn-dark d-flex align-items-center" style="text-decoration: none;">
-        Ir p/ Home
-      </a>
+      <% if(data.goLogout){ %>
+        <form method="post" action="<%- route.auth.logout() -%>">
+          <button type="submit" href="<%- route.home() -%>" class="btn btn-dark d-flex align-items-center" style="text-decoration: none;">
+            Logout
+          </button>    
+        </form>
+      <% }else{ %>
+        <a href="<%- route.home() -%>" class="btn btn-dark d-flex align-items-center" style="text-decoration: none;">
+          Ir p/ Home
+        </a>
+      <% } %>
     </div>
   </div>
   <%- include('utils/drag-and-drop'); -%>
