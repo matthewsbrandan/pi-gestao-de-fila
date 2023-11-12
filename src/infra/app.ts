@@ -26,7 +26,7 @@ import { seeds } from './repositories/seeds'
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, { cors: { origin: '*' } })
 
 app.use(cors({ origin: '*' }))
 app.use(express.json())
@@ -37,7 +37,8 @@ app.set('view engine', 'html');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  secret: process.env.SECRET_KEY,
+  // secret: process.env.SECRET_KEY,
+  secret: "Segredo",
   saveUninitialized: false,
   resave: false,
   cookie: { maxAge: 24 * 60 * 60 * 1000} // 24h - 1d
@@ -114,12 +115,12 @@ let lastIndex = 100;
   
     socket.on('addOrder', async (order, cb) => {
       try{
-        const newOrder = await CreateOrderFactory().useCase.execute({
-          name: order.name,
+        const { order: newOrder, passwordForFirstAccess } = await CreateOrderFactory().useCase.execute({
+          customer: order.customer,
+          device_id: order.device_id,
           queue_id: order.queue_id,
-          status: order.status,
-          total_price: 0,
-          user_id: 1
+          total_price: order.total_price,
+          items: order.items,
         })
 
         orders.push(newOrder);
@@ -128,12 +129,27 @@ let lastIndex = 100;
         cb({
           result: true,
           response: 'Pedido criado com sucesso',
-          data: newOrder
+          data: {
+            order: newOrder,
+            passwordForFirstAccess
+          }
         })
       }catch(e){
+        let response = e.message ?? 'Não foi possível criar o pedido'
+        let data = undefined;
+        
+        if(response.includes('@passwordForFirstAccess')){
+          const splited = response.split('@passwordForFirstAccess')
+          if(splited.length === 2){
+            response = splited[0]
+            data = { passwordForFirstAccess: splited[1] }
+          }
+        }
+        
         cb({
           result: false,
-          response: e.message ?? 'Não foi possível criar o pedido'
+          response,
+          data
         })
       }
     });

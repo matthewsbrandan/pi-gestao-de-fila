@@ -15,7 +15,11 @@ export const route = {
   products: {
     home: () => '/produtos',
     import: () => '/produtos/import',
+    // EM DESENVOLVIMENTO
     update: (product_id: string) => `/produtos/${product_id}`,
     template: () => '/asset/modelo-de-tabela-de-produtos.xlsx'
+  },
+  dashboard: {
+    home: () => '/dashboard'
   }
 }

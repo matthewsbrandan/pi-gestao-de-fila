@@ -9,8 +9,8 @@
     <script>
       window.addEventListener('load', () => {
         try{
-          const messages = <%- JSON.stringify(messages) %>;
-
+          const messages = JSON.parse('<%- JSON.stringify(messages) %>');
+          
           messages.forEach((data) => {
             try{
               const [type, ...rest] = data.split(':')
@@ -20,7 +20,9 @@
             }catch(e){ console.error('[error-flash-message]', { e }) }
           })
         }catch(e){
-          console.error('[error-process-flash-message]', { e })
+          console.error('[error-process-flash-message]', { e, messages: '<%- JSON.stringify(messages) %>' })
+
+          notify('error', 'Houve um erro inesperado')
           return []
         }
       })

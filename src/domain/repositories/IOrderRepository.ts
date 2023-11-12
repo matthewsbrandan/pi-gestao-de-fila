@@ -10,4 +10,5 @@ export interface IOrderRepository{
   removeOrder(id: number) : Promise<void>
   findOrderById(id: number) : Promise<Order>
   findOrdersByQueueId(queue_id: number, filters?: OrderFilters) : Promise<Order[]>
+  findOrdersOnLast30Days(props?: { includes?: ('user' | 'queue')[] }) : Promise<Order[]>
 }

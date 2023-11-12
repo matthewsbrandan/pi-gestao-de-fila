@@ -12,7 +12,7 @@ export class StartQueueUseCase{
 
     const createdQueue = await this.queueRepo.createQueue({
       is_autoincrement: true,
-      user_id
+      user_id,
     })
     
     return createdQueue

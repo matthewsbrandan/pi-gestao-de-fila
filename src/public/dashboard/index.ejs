@@ -1,0 +1,239 @@
+<%- include('../layout/header'); -%>
+  <div class="bg-light p-5 rounded mb-4">
+    <h1>Dashboard</h1>
+    <p class="lead">Veja aqui suas estatísticas de venda</p>
+    
+    <nav class="navbar navbar-expand-lg bg-dark rounded mt-4">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand text-white"
+          style="font-size: var(--bs-body-font-size);"
+          href="<%- route.dashboard.home() -%>"
+        >Dashboard</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(250, 250, 250, 0.55);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a
+                class="nav-link text-muted"
+                href="<%- route.home() -%>"
+              >Filas</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link  text-muted"
+                href="<%- route.products.home() -%>"
+              >Produtos</a>
+            </li>
+            <li class="nav-item">
+              <form method="post" action="<%- route.auth.logout() -%>">
+                <button type="submit" class="btn nav-link text-muted">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="row">    
+    <div class="col-12 col-md-6">
+      <div class="card text-bg-light mb-3" style="
+        border: none;
+        box-shadow: 0 0 2px #0002;
+      ">
+        <div class="card-header" style="
+          font-size: .75rem;
+          text-transform: uppercase;
+          font-weight: 700;
+          padding-top: .2rem;
+          padding-bottom: .2rem;
+          border: none;
+        ">Pedidos por hora</div>
+        <div class="card-body pb-2">
+          <div>
+            <canvas id="chart-orders-by-hour"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="card text-bg-light mb-3" style="
+        border: none;
+        box-shadow: 0 0 2px #0002;
+      ">
+        <div class="card-header" style="
+          font-size: .75rem;
+          text-transform: uppercase;
+          font-weight: 700;
+          padding-top: .2rem;
+          padding-bottom: .2rem;
+          border: none;
+        ">Pedidos dia da semana</div>
+        <div class="card-body pb-2">
+          <div>
+            <canvas id="chart-orders-by-weekday"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card text-bg-light mb-3" style="
+        border: none;
+        box-shadow: 0 0 2px #0002;
+      ">
+        <div class="card-header" style="
+          font-size: .75rem;
+          text-transform: uppercase;
+          font-weight: 700;
+          padding-top: .2rem;
+          padding-bottom: .2rem;
+          border: none;
+        ">Clientes Frequêntes</div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">#</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Cliente</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Contato</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Pedidos</th>
+              </tr>
+            </thead>
+            <tbody style="border-top: 1px solid #9993">
+              <% if(!data.occurrenceOfUsers || data.occurrenceOfUsers.length === 0){ %>
+                <tr style="border: 0 solid transparent; margin-bottom: -.5rem;">
+                  <td colspan="4">
+                    <div
+                      class="bg-light text-muted d-flex align-items-center justify-content-center text-center"
+                      style="height: 10rem;"
+                    >
+                      <small>Nenhum cliente nos últimos 30 dias</small>
+                    </div>
+                  </td>
+                </tr>
+              <% }else data.occurrenceOfUsers.forEach((item) => { %>
+                <tr>
+                  <th scope="row"><%- item.user.id -%></th>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span><%- item.user.name -%></span>
+                      <small class="text-muted"><%- item.user.email -%></small>
+                    </div>
+                  </td>
+                  <td><%- item.user.phone -%></td>
+                  <td><%- item.amount -%></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="card text-bg-light mb-3" style="
+        border: none;
+        box-shadow: 0 0 2px #0002;
+      ">
+        <div class="card-header" style="
+          font-size: .75rem;
+          text-transform: uppercase;
+          font-weight: 700;
+          padding-top: .2rem;
+          padding-bottom: .2rem;
+          border: none;
+        ">Produtos mais vendidos</div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">#</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Produto</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Preço</th>
+                <th style="font-size: 10px; text-transform: uppercase" scope="col">Quantidade</th>
+              </tr>
+            </thead>
+            <tbody style="border-top: 1px solid #9993">
+              <% if(!data.occurrenceOfProducts || data.occurrenceOfProducts.length === 0){ %>
+                <tr style="border: 0 solid transparent; margin-bottom: -.5rem;">
+                  <td colspan="4">
+                    <div
+                      class="bg-light text-muted d-flex align-items-center justify-content-center text-center"
+                      style="height: 10rem;"
+                    >
+                      <small>Nenhum produto vendido nos últimos 30 dias</small>
+                    </div>
+                  </td>
+                </tr>
+              <% }else data.occurrenceOfProducts.forEach((item) => { %>
+                <tr>
+                  <th scope="row"><%- item.product.id -%></th>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span><%- item.product.name -%></span>
+                      <% if(item.product.category) { %>
+                        <small class="text-muted"><%- item.product.category.name -%></small>
+                      <% } %>
+                    </div>
+                  </td>
+                  <td><%- item.product.price_formatted -%></td>
+                  <td><%- item.amount -%></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('chart-current-queue');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: 12 }).map((_, i) => i + 1),
+        datasets: [{
+          label: 'Pedidos por hora',
+          data: [0, 20, 20, 60, 60, 120, 180, 120, 125, 105, 110, 170],
+          borderColor: '#f00',
+          fill: false,
+          cubicInterpolationMode: 'monotone',
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: { intersect: false, },
+        scales: {
+          x: {
+            display: true,
+            title: { display: true },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            display: true,
+            title: { display: false },
+            suggestedMin: 0,
+            suggestedMax: 200,
+            grid: {
+              color: "rgba(0, 0, 0, 0.05)"
+            }
+          }
+        }
+      },
+    });
+  </script>
+<%- include('../layout/footer'); -%>
