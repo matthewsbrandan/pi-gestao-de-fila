@@ -26,7 +26,16 @@ function renderOrder(order){
 function renderCard(order){
   return `
     <div class="card" draggable="true" id="card-order-${order.id}">
-      <div class="content"><span>#${order.id}</span> <small class="text-muted">${order.name}</small></div>
+      <div class="content">
+        <span>#${order.id}</span>
+        <small class="text-muted">
+          ${order.name}
+          ${order.device_id ? `
+            <br/>
+            <b style="font-size: .65rem;">DISPOSITIVO #${order.device_id}</b>
+          `:''}
+        </small>
+      </div>
     </div>
   `
 }
