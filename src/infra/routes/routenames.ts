@@ -22,5 +22,9 @@ export const route = {
   },
   dashboard: {
     home: () => '/dashboard'
+  },
+  device: {
+    home:   () => '/dispositivos',
+    create: () => '/dispositivos'
   }
 }
