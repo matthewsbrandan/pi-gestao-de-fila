@@ -20,13 +20,13 @@ function renderOrder(order){
   document.getElementById(`card-order-${order.id}`)?.remove()
   document.getElementById(`dropzone-${order.status}`).insertAdjacentHTML(
     'beforeend',
-    renderCard(order.id)
+    renderCard(order)
   )
 }
-function renderCard(id){
+function renderCard(order){
   return `
-    <div class="card" draggable="true" id="card-order-${id}">
-      <div class="content">#<span>${id}</span></div>
+    <div class="card" draggable="true" id="card-order-${order.id}">
+      <div class="content"><span>#${order.id}</span> <small class="text-muted">${order.name}</small></div>
     </div>
   `
 }

@@ -24,8 +24,19 @@
   width: 250px;
   margin: 0 0 15px;
   border-radius: 4px;
-  font-weight: 600;
   font-size: 18px;
+}
+.card .content{
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.card .content > span{
+  font-weight: 600;
+}
+.card .content > small{
+  font-size: .75rem;
+  line-height: 1.4;
 }
 .status{
   width: 30px;

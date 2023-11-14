@@ -51,10 +51,10 @@ export class OrderRepository implements IOrderRepository{
 
     return responses.map((response) => this._instance(response))
   }
-  async findOrderByQueueIdNotWithdrawed(queue_id: number): Promise<Order | undefined> {
+  async findOrderByQueueIdAndDeviceIdNotWithdrawed(queue_id: number, device_id: number): Promise<Order | undefined> {
     const response = await db.order.findFirst({
       where: {
-        queue_id,
+        queue_id, device_id,
         status: { not: 'withdrawn' }
       }
     })

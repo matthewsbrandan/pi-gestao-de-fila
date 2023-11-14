@@ -10,6 +10,6 @@ export interface IOrderRepository{
   removeOrder(id: number) : Promise<void>
   findOrderById(id: number) : Promise<Order>
   findOrdersByQueueId(queue_id: number, filters?: OrderFilters) : Promise<Order[]>
-  findOrderByQueueIdNotWithdrawed(queue_id: number) : Promise<Order | undefined>
+  findOrderByQueueIdAndDeviceIdNotWithdrawed(queue_id: number, device_id: number) : Promise<Order | undefined>
   findOrdersOnLast30Days(props?: { includes?: ('user' | 'queue')[] }) : Promise<Order[]>
 }

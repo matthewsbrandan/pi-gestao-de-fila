@@ -22,5 +22,25 @@
   <%- include('utils/drag-and-drop'); -%>
   <script src="/js/drag-and-drop.js"></script>
   <%- include('js/socket') -%>
+  <script>
+    function defaultQRCode(el, id){
+      const makeCode = (id) => {
+        el.innerHTML = `
+          <small class="text-muted">
+            Não foi possível gerar o qrcode.<br/>
+            Insira o código acima na aplicação para acompanhar seu pedido
+          </small>
+        `
+      }
+      const clear = () => el.innerHTML = ''
+
+      if(id) makeCode(id)
+      else clear()
+
+      return { clear, makeCode }
+    }
+    const handleUrl = (path) => `${window.location.protocol}//${window.location.host}/${path}`
+  </script>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <%- include('utils/modals/add-order') -%>
 <%- include('layout/footer'); -%>

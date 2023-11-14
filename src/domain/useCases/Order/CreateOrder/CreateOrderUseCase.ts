@@ -123,7 +123,7 @@ export class CreateOrderUseCase{
       'Dispositivo não encontrado'
     )
 
-    const existentOrderWithThisDevice = await this.orderRepo.findOrderByQueueIdNotWithdrawed(queue_id)
+    const existentOrderWithThisDevice = await this.orderRepo.findOrderByQueueIdAndDeviceIdNotWithdrawed(queue_id, device_id)
 
     if(existentOrderWithThisDevice) throw new Error(
       'Já existe um pedido utilizando este dispositivo para notificação'

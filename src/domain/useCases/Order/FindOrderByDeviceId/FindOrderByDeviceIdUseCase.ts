@@ -18,7 +18,7 @@ export class FindOrderByDeviceIdUseCase{
       'Não há nenhuma fila em andamento'
     )
     
-    const findedOrder = await this.orderRepo.findOrderByQueueIdNotWithdrawed(queue.id)
+    const findedOrder = await this.orderRepo.findOrderByQueueIdAndDeviceIdNotWithdrawed(queue.id, device_id)
 
     if(!findedOrder) throw new Error(
       'Nenhuma ordem encontrada para este dispositivo'
