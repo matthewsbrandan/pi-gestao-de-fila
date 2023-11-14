@@ -231,7 +231,7 @@
   const initQRCode = (el, url) => {
     try{
       return new QRCode(el, {
-        text: handleUrl(url),
+        text: handleUrl(url ? `orders/${url}`:''),
         width: 128,
         height: 128,
         colorDark : "#000000",

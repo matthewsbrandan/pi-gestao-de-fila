@@ -32,4 +32,18 @@ export class DeviceRepository implements IDeviceRepository{
 
     return this._instance(response)
   }
+  async create(device: Omit<Device, "id">): Promise<Device> {
+    const response = await db.device.create({
+      data: device
+    })
+
+    return this._instance(response)
+  }
+  async findAll(): Promise<Device[]> {
+    const responses = await db.device.findMany()
+    
+    if(!response) return [];
+
+    return responses.map(response => this._instance(response))   
+  }
 }

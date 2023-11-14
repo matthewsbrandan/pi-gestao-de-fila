@@ -1,0 +1,94 @@
+<%- include('../layout/header'); -%>
+  <div class="bg-light p-5 rounded mb-4">
+    <h1>Dashboard</h1>
+    <p class="lead">Veja aqui suas estatísticas de venda</p>
+    
+    <nav class="navbar navbar-expand-lg bg-dark rounded mt-4">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand text-white"
+          style="font-size: var(--bs-body-font-size);"
+          href="<%- route.device.home() -%>"
+        >Dispositivos</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(250, 250, 250, 0.55);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <% 
+              [
+                { url: route.home(),           name: 'Fila'         },
+                { url: route.products.home(),  name: 'Produtos'     },
+                { url: route.dashboard.home(), name: 'Dashboard'    },
+              ].forEach((item) => {
+            %>
+              <li class="nav-item">
+                <a class="nav-link  text-muted" href="<%- item.url -%>"><%- item.name -%></a>
+              </li>
+            <% }) %>
+            <li class="nav-item">
+              <form method="post" action="<%- route.auth.logout() -%>">
+                <button type="submit" class="btn nav-link text-muted">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="mb-5">
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-dark mb-4"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAddDevice"
+        >Adicionar Dispositivo</button>
+      </div>
+    <div class="card text-bg-light mb-3" style="
+      border: none;
+      box-shadow: 0 0 2px #0002;
+    ">
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th style="font-size: 11px; text-transform: uppercase" scope="col">#</th>
+              <th style="font-size: 11px; text-transform: uppercase" scope="col">Dispositivo</th>
+              <th style="font-size: 11px; text-transform: uppercase" scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody style="border-top: 1px solid #9993">
+            <% if(!data.devices || data.devices.length === 0){ %>
+              <tr style="border: 0 solid transparent; margin-bottom: -.5rem;">
+                <td colspan="4">
+                  <div
+                    class="bg-light text-muted d-flex align-items-center justify-content-center text-center"
+                    style="height: 10rem;"
+                  >
+                    <small>Não existe nenhum dispositivo cadastrado</small>
+                  </div>
+                </td>
+              </tr>
+            <% }else data.devices.forEach((device) => { %>
+              <tr>                  
+                <th scope="row"><%- device.id -%></th>
+                <td><%- device.name -%></td>
+                <td><%- device.is_active ? 'Ativo' : 'Desativado' -%></td>                  
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <%- include('../utils/modals/add-device') -%>
+<%- include('../layout/footer'); -%>
