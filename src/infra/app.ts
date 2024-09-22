@@ -37,8 +37,7 @@ app.set('view engine', 'html');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  // secret: process.env.SECRET_KEY,
-  secret: "Segredo",
+  secret: process.env.SECRET_KEY,
   saveUninitialized: false,
   resave: false,
   cookie: { maxAge: 24 * 60 * 60 * 1000} // 24h - 1d

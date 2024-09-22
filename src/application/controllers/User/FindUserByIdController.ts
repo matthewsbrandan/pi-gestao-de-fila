@@ -13,7 +13,7 @@ export class FindUserByIdController{
 
       return response.status(200).json({
         result: true,
-        response: "Mensagem de sucesso",
+        response: "Usuário encontrado com sucesso",
         data
       })
     } catch (error) {
